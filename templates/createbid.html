@@ -1,0 +1,73 @@
+{% extends "index.html" %}
+{% block content %}
+                            <div class="row">
+
+                                <form action="../submit" id="formentry" class="form-horizontal" role="form" data-parsley-validate novalidate>
+                                    <div class="container-fluid shadow">
+                                        <div class="row">
+                                            <div id="valErr" class="row viewerror clearfix hidden">
+                                                <div class="alert alert-danger">Oops! Seems there are some errors..</div>
+                                            </div>
+                                            <div id="valOk" class="row viewerror clearfix hidden">
+                                                <div class="alert alert-success">Yay! ..</div>
+                                            </div>
+
+
+                                            <div class="row">
+                                                <div class="col-md-11">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group" style="display: block;">
+                                                                <label class="control-label control-label-left col-sm-3" for="title">Title of the auction<span class="req"> *</span></label>
+                                                                <div class="controls col-sm-9">
+
+                                                                    <input id="title" type="text" class="form-control k-textbox" data-role="text" required="required" data-parsley-errors-container="#errId1"><span class="help-block">Write the item name in this field!</span><span id="errId1" class="error"></span></div>
+
+                                                            </div>
+                                                            <div class="form-group" style="display: block;">
+                                                                <label class="control-label control-label-left col-sm-3" for="description">Description of the auction</label>
+                                                                <div class="controls col-sm-9">
+
+                                                                    <textarea id="description" rows="3" class="form-control k-textbox" data-role="textarea" data-parsley-errors-container="#errId2"></textarea><span class="help-block">Write a short description of the item you are trying to sell!</span><span id="errId2" class="error"></span></div>
+
+                                                            </div>
+                                                            <div class="form-group" style="display: block;">
+                                                                <label class="control-label control-label-left col-sm-5" for="bid">Starting bid<span class="req"> *</span></label>
+                                                                <div class="controls col-sm-2">
+
+                                                                    <span class="k-widget k-numerictextbox form-control" style=""><span class="k-numeric-wrap k-state-default"><input type="text" class="k-formatted-value form-control k-input" tabindex="0" aria-disabled="false" aria-readonly="false" id="bid" style="display: inline-block;" data-parsley-errors-container="#errId3"><input id="bid" value="" type="text" class="form-control k-input" data-role="numeric" data-format="currency" role="spinbutton" aria-valuenow="0" style="display: none;" aria-disabled="false" aria-readonly="false" data-error-container="#errfield5" data-default="1" required="required" data-parsley-errors-container="#errId3"><span class="k-select"><span unselectable="on" class="k-link"><span unselectable="on" class="k-icon k-i-arrow-n" title="Increase value">Increase value</span></span><span unselectable="on" class="k-link"><span unselectable="on" class="k-icon k-i-arrow-s" title="Decrease value">Decrease value</span></span>
+                                                                    </span>
+                                                                    </span>
+                                                                    </span><span class="help-block">If the user doesn't insert a starting bid the system will automatically assign 1€ as the starting bid!</span><span id="errId3" class="error"></span></div>
+
+                                                            </div>
+                                                            <div class="form-group" style="display: block;">
+                                                                <label class="control-label control-label-left col-sm-4" for="field7">The date in which the auction will end</label>
+                                                                <div class="controls col-sm-5">
+
+                                                                    <span class="k-widget k-datetimepicker k-header form-control"><span class="k-picker-wrap k-state-default"><input id="field7" type="text" class="form-control k-input" data-role="datetime" role="textbox" aria-haspopup="true" aria-expanded="false" style="width: 100%;" aria-disabled="false" aria-readonly="false" aria-label="Current focused date is null" data-error-container="#errfield7" data-min="10/5/2017 12:00 AM" data-parsley-errors-container="#errId4"><span unselectable="on" class="k-select"><span unselectable="on" class="k-icon k-i-calendar" role="button" aria-controls="field7_dateview">select</span><span unselectable="on" class="k-icon k-i-clock" role="button" aria-controls="field7_timeview">select</span></span>
+                                                                    </span>
+                                                                    </span><span class="help-block">Please remember, the minimum duration of an auction is 72 hours</span><span id="errId4" class="error"></span></div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row" style="display: block;">
+                                                        <div class="col-md-12">
+                                                            <div class="form-group pull-right btn-group group-inline">
+
+
+
+                                                                <button id="submit" type="button" class="btn btn-primary btn-default">Submit</button> <button id="cancel" type="button" class="btn btn-danger">Cancel</button> </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+{% endblock %}
