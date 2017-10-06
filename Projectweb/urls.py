@@ -13,12 +13,12 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url
+from django.conf.urls import url,include
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.views.generic.base import TemplateView
 from Project.views import *
-
+admin.autodiscover()
 
 
 
@@ -26,9 +26,17 @@ urlpatterns = [
 
     url(r'^admin/', admin.site.urls),
     url(r'^login/$', auth_views.login, {'template_name': 'login.html'}, name='login'),
-    url(r'^$', TemplateView.as_view(template_name='index.html'), name='home'),
+    url(r'^$', archive, name='home'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^register/$', register, name='register'),
-    url(r'^createbid/$',createbid, name='createbid'),
+    url(r'^add/$', Createbid.as_view(), name="add_bid"),
+    url(r'^savebid/$', savebid),
+    url(r'^editbid/(\d+)/$', editbid),
+    url(r'^updatebid/(\d+)/$', updatebid),
+    url(r'^makebid/(\d+)/$', makebid),
+
+
+
+
 
 ]

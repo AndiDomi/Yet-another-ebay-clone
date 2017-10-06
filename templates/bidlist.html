@@ -1,0 +1,23 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+{%  for bids in bid %}
+    <h4>Bid title: {{ bids.title }}</h4> <a href="/editbid/{{ bids.id }}/">Edit bid</a>
+    <p>Bid created by: {{ bids.author }}</p>
+    <p>Bid id: {{ bids.id }}</p>
+    <p>Bid created on:{{ bids.timestamp }}</p>
+    <p>Hours remaining before bid ends: {{ bids.bid_res }}</p>
+    <p>Bid Details: {{ bids.details }}</p>
+    <p>Current bid made by {{ bids.bid_by }}: {{ bids.bid }}</p>
+        <form action="/makebid/{{ bids.id }}/" method="post">
+        {%  csrf_token %}
+        <p>Make bid! <input type="number" name="bid" min="{{ bids.bid }}" required="" id="bid" placeholder={{ bids.bid }}><input type="submit" value="Bid"></p>
+
+    </form>
+
+{% empty %}
+    <p>No bids<p>
+{%  endfor %}
+
+{% endblock %}

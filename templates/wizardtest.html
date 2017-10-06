@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+
+<h2> Add Bid</h2>
+{% block content %}
+
+<p><b>Confirm the creation of a bid</b></p>
+{% if error %}
+  {{ error}}
+{% endif %}
+
+<b>{{b_title}}</b>
+<b>{{b_title}}</b>
+<b>{{b_body}}</b>
+<b>{{b_bid}}</b>
+<b>{{b_res}}</b>
+
+    <form action="/savebid/" method="post">
+        {% csrf_token %}
+         {{ form.as_p }}
+         <INPUT TYPE=HIDDEN NAME="b_title" VALUE={{b_title}}>
+		 <INPUT TYPE=HIDDEN NAME="b_details" VALUE={{b_details}}>
+         <INPUT TYPE=HIDDEN NAME="b_bid" VALUE={{b_bid}}>
+		 <INPUT TYPE=HIDDEN NAME="b_res" VALUE={{b_res}}>
+        <input type="submit" value="Submit">
+    </form>
+
+
+{% endblock %}
