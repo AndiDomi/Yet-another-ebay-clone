@@ -32,6 +32,7 @@ urlpatterns = [
     url(r'^add/$', Createbid.as_view(), name="add_bid"),
     url(r'^savebid/$', savebid),
     url(r'^editbid/(\d+)/$', editbid),
+    url(r'^search/', search),
     url(r'^updatebid/(\d+)/$', updatebid),
     url(r'^makebid/(\d+)/$', makebid),
 

@@ -82,8 +82,16 @@ def savebid(request):
 
 
 def archive(request):
+
     bid = Auction.objects.order_by('-timestamp')
-    return render(request, "bidlist.html",{'bid':bid})
+    print("we are here now!")
+    if request.user.is_authenticated():
+        return render(request, "bidlist.html",{'bid':bid,
+                                               'authuser': request.user})
+    else:
+        return render(request, "bidlist.html",{'bid':bid,
+                                               'guest':'Your are not loged in, please log in to bid!'})
+
 
 
 
@@ -93,14 +101,17 @@ def editbid(request, offset):
         return HttpResponseRedirect('/login/')
     else:
         bid = get_object_or_404(Auction, id=offset)
-        return render(request,"editbid.html",
-            {'author' : request.user,
-             "title" : bid.title,
-             "id": bid.id,
-             "bid_details" : bid.details,
-             "bid_res":bid.bid_res,
-             "bid_by":bid.bid_by
-             })
+
+        return render(request, "editbid.html",
+                {'author': request.user,
+                "title": bid.title,
+                "id": bid.id,
+                "bid_details": bid.details,
+                "bid_res": bid.bid_res,
+                "bid_by": bid.bid_by
+                    })
+
+
 
 
 
@@ -116,17 +127,15 @@ def updatebid(request, offset):
         return HttpResponseRedirect(reverse("home"))
 
     if request.method=="POST":
-        details = request.POST["details"].strip()
-        title = request.POST["title"].strip()
-        bid_res=request.POST["bid_res"]
-        bids.title = title
-        bids.details = details
-        bids.bid_res = bid_res
 
+        details = request.POST["details"]
+        bid.details = details
         bid.save()
         messages.add_message(request, messages.INFO, "Bid updated")
 
     return HttpResponseRedirect(reverse("home"))
+
+
 
 def makebid(request, offset):
     bids = Auction.objects.filter(id= offset)
@@ -138,11 +147,21 @@ def makebid(request, offset):
 
     if request.method == "POST":
         bidmade = request.POST["bid"].strip()
-        bids.bid = bidmade
-        bids.bid_by = request.user
+        bid.bid = bidmade
+        bid.bid_by = request.user
         bid.save()
         messages.add_message(request, messages.INFO, "Bid made!")
 
     return HttpResponseRedirect(reverse("home"))
 
 
+def search(request):
+    if request.method == "GET":
+        searchText=request.GET["id"]
+        bid = Auction.objects.filter(title__contains=searchText)
+        if request.user.is_authenticated():
+            return render(request, "bidlist.html",{'bid':bid,
+                                               'authuser': request.user})
+        else:
+            return render(request, "bidlist.html",{'bid':bid,
+                                               'guest':'Your are not loged in, please log in to bid!'})

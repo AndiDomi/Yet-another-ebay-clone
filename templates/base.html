@@ -47,8 +47,8 @@
             <!--                <li><a href="#">Search bids</a></li>-->
             <li><a href="#search" data-toggle="collapse">Search bids</a>
                 <div id="search" class="collapse ">
-                    <form class="form-search">
-                        <input type="text" class="form-control" name="search" placeholder="Search for bid" required=""
+                    <form class="form-search" action="/search/" method="get">
+                        <input type="text" class="form-control" name="id" placeholder="Search for bid" required=""
                                autofocus=""/>
                         <button class="btn btn-lg btn-primary btn-block " type="submit">Search</button>
                     </form>
@@ -65,9 +65,9 @@
 
                 {% endblock %}
            {% if messages %}
-        <ul class="messages">
+        <ul class="messages col-lg-12 text-center">
             {% for message in messages %}
-            <div{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</div>
+            <div{% if message.tags %} class="alert alert-info {{ message.tags }}"{% endif %}>{{ message }}</div>
             {% endfor %}
         </ul>
     {% endif %}
@@ -88,7 +88,7 @@
                         </div>
                     </a>
                 </div>
-                <div class="footer_message alert alert-success text-center col-lg-11 hidden">hello</div>
+                <div class="footer_message alert alert-success text-center col-lg-11 hidden"></div>
             </div>
         </nav>
         <div class="container-fluid">

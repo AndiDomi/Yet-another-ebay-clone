@@ -10,7 +10,7 @@ class Auction(models.Model):
     title = models.CharField(max_length=200, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,related_name="author")
     details = models.TextField(null=True)
-    bid = models.DecimalField(max_digits=10,decimal_places=2,null=True)
+    bid = models.DecimalField(max_digits=10,decimal_places=1,null=True)
     bid_by = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,related_name="bid_by")
     bid_res = models.IntegerField(default=1,null=True)
     timestamp = models.DateTimeField(default=django.utils.timezone.now ,null=True)

@@ -7,9 +7,7 @@
 <p><b>Edit Bid: {{ title }}</b></p>
     <form action="/updatebid/{{ id }}/" method="post">
         {%  csrf_token %}
-       <p>Title: <input type="text" name="title" id="title" value="{{ title }}"></p>
        <p>Details: <textarea name="details" cols="50" rows="20">{{ bid_details }}</textarea></p>
-        <p>Resolution time: (minimum 1h) <input type="number" name="bid_res" min="73" required="" id="bid_res" placeholder=1></p>
         <input type="submit" value="Change">
     </form>
 
