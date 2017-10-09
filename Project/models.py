@@ -1,6 +1,7 @@
 import datetime
 
 import django
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -12,9 +13,11 @@ class Auction(models.Model):
     details = models.TextField(null=True)
     bid = models.DecimalField(max_digits=10,decimal_places=1,null=True)
     bid_by = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,related_name="bid_by")
-    bid_res = models.IntegerField(default=1,null=True)
-    timestamp = models.DateTimeField(default=django.utils.timezone.now ,null=True)
-
+    # todo: fix this to be a date
+    bid_res = models.DateTimeField(null=True)
+    timestamp = models.DateTimeField(null=True)
+    # Todo: add active or not
+    active = models.IntegerField()
 
     def __unicode__(self):
         return self.title

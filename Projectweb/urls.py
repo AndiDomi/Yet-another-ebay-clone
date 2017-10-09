@@ -36,8 +36,5 @@ urlpatterns = [
     url(r'^updatebid/(\d+)/$', updatebid),
     url(r'^makebid/(\d+)/$', makebid),
 
-
-
-
-
 ]
+

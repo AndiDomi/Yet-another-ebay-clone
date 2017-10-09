@@ -1,5 +1,8 @@
 {% extends "index.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
 {% block content %}
+
   {% if error%}
   <p> <b>{{ error }}</b> </p>
     {% endif %}
@@ -9,4 +12,7 @@
          {{ form.as_p }}
         <input type="submit" value="Submit">
     </form>
+
+
+
 {% endblock %}

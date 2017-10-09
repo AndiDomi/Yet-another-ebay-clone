@@ -1,3 +1,4 @@
+import math
 from django.shortcuts import render
 from django.views import View
 # Create your views here.
@@ -14,8 +15,12 @@ from django.http import HttpResponseRedirect
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.contrib import messages
-import datetime
+from Project.models import Auction
+from datetime import datetime
 from django.conf import settings
+from django.core.paginator import Paginator
+
+
 
 
 def register(request):
@@ -40,8 +45,9 @@ def register(request):
 @method_decorator(login_required, name="dispatch")
 class Createbid(View):
     def get(self, request):
-        form = CreateBid()
-        return render(request, 'createbid.html', {'form': form})
+
+        return render(request, 'createbid2.html')
+
 
     def post(self, request):
         form = CreateBid(request.POST)
@@ -51,6 +57,7 @@ class Createbid(View):
             bid_details = cd['details']
             bid_bid = cd['bid']
             bid_res = cd['bid_res']
+            print("cd bid",bid_res)
             form = confBid()
             return render(request, 'wizardtest.html', {'form': form,
                                                        "b_title": bid_t,
@@ -62,6 +69,8 @@ class Createbid(View):
             return render(request, 'createbid.html', {'form': form, })
 
 
+
+
 def savebid(request):
     option = request.POST.get('option', '')
     if option == 'Yes':
@@ -69,9 +78,8 @@ def savebid(request):
         b_details = request.POST.get('b_details', '')
         b_bid = request.POST.get('b_bid', )
         b_res = request.POST.get('b_res', )
-
-        bid_save = Auction(title=b_title, details=b_details, bid=b_bid, bid_res=b_res, timestamp=datetime.datetime.now(),
-                           author= request.user,bid_by= request.user)
+        bid_save = Auction(title=b_title, details=b_details, bid=b_bid, bid_res=b_res, timestamp=datetime.now(),
+                           author= request.user,bid_by= request.user,active=1)
         bid_save.save()
         messages.add_message(request, messages.INFO, "New bid has been saved")
         return HttpResponseRedirect(reverse("home"))
@@ -84,7 +92,26 @@ def savebid(request):
 def archive(request):
 
     bid = Auction.objects.order_by('-timestamp')
-    print("we are here now!")
+    bid2= Auction.objects.all()
+
+    for a in bid2:
+        a2 = datetime.now()
+        print(str(a2))
+        b2 = a.bid_res
+        print(str(b2))
+
+
+        if str(b2)<str(a2):
+            print("smaller")
+            print(a.active," before ")
+            a.active = 0
+            a.save()
+            print(a.active," after")
+        else:
+            print("bigger")
+
+
+
     if request.user.is_authenticated():
         return render(request, "bidlist.html",{'bid':bid,
                                                'authuser': request.user})

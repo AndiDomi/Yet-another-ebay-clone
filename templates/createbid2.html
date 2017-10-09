@@ -1,0 +1,18 @@
+{% extends "index.html" %}
+{% load i18n %}
+{% load widget_tweaks %}
+{% block content %}
+
+  {% if error%}
+  <p> <b>{{ error }}</b> </p>
+    {% endif %}
+<form action="/add/" method="post">
+         <p><label for="id_title">Title of the auction :</label> <input type="text" name="title" maxlength="200" required="" id="id_title"></p>
+<p><label for="id_details">The description of the auction :</label> <textarea name="details" cols="40" rows="10" id="id_details"></textarea></p>
+<p><label for="id_bid">Starting bid (€) :</label> <input type="number" name="bid" step="0.01" required="" id="id_bid"></p>
+<p><label for="id_bid_res">Time for the bid to be active (minimum is set to 72h):</label> <input type="datetime-local" name="bid_res" required="" id="id_bid_res"></p>
+    <input type="submit" value="Submit">
+    </form>
+
+
+{% endblock %}

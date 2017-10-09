@@ -1,8 +1,10 @@
+
 {% extends "base.html" %}
+{% load i18n %}
 {% block navigation %}
                         <ul class="nav nav-tabs" id="sync-tabs">
-                            <li class="active text-center "><a class="text-center" data-toggle="tab" href="#home">Login</a> </li>
-                            <li class=""><a href="/register">Register</a></li>
+                            <li class="active text-center "><a class="text-center" data-toggle="tab" href="#home">{% trans "Login" %}</a> </li>
+                            <li class=""><a href="/register">{% trans "Register" %}</a></li>
                         </ul>
                     </div>
                     <div class="tab-content ">
@@ -22,7 +24,7 @@
                                         </div>
                                     {% endfor %}
 
-                                    <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+                                    <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Login" %}</button>
                                 </form>
                             </div>
                         </div>

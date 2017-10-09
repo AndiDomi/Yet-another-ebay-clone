@@ -1,28 +1,23 @@
+
 {% extends "base.html" %}
+{% load i18n %}
 {% block navigation %}
                     {% if request.user.is_authenticated %}
 
                         <ul class="nav nav-tabs" id="sync-tabs">
-                            <li class="clear hi active"><a data-toggle="tab" href="#menu2">Profile</a></li>
-                            <li class="hi"><a data-toggle="tab" href="/editprofile">Edit Profile</a></li>
+                            <li class="clear hi active"><a data-toggle="tab" href="#menu2">{% trans "Profile" %}</a></li>
+                            <li class="hi"><a data-toggle="tab" href="/editprofile">{% trans "Edit Profile" %}</a></li>
                         </ul>
                         </div>
                         <div id="menu2" class="tab-pane fade fade in active ">
                             <div class="col-lg-12 text-center">
-                                <h4>Wellcome {{request.user.username}}</h4>
+                                <h4>{% trans "Welcome" %} {{request.user.username}}</h4>
                             </div>
-                            <div class="col-lg-12 text-center">
-                                <h5>Numbers of bids in totall</h5>
-                            </div>
-                            <div class="col-lg-12 text-center">
-                                <h5>Numbers of your active bids</h5>
-                            </div>
-                            <div class="col-lg-12 text-center">
-                                <h5>Numbers of edits</h5>
+
                                 <div class="row">
                                     <div class="col-lg-12 text-center">
                                         <a>
-                                            <h4><a href="/logout"  /> Logout </h4>
+                                            <h4><a href="/logout"  /> {% trans "Logout" %} </h4>
                                         </a>
                                     </div>
                                 </div>
@@ -31,11 +26,11 @@
                     {% else %}
 
                         <ul class="nav nav-tabs" id="sync-tabs">
-                            <li class="active text-center "><a class="text-center" href="/login/">Login</a></li>
-                            <li class=""><a href="/register/">Register</a></li>
+                            <li class="active text-center "><a class="text-center" href="/login/">{% trans "Login" %}</a></li>
+                            <li class=""><a href="/register/">{% trans "Register" %}</a></li>
                         </ul>
 
-                        <h4>Wellcome Guest, please click the above button to login or register</h4>
+                        <h4>{% trans "Welcome Guest, please click the above button to login or register" %}</h4>
 
                         </div>
 

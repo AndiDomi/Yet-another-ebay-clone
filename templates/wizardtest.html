@@ -1,19 +1,18 @@
 {% extends "base.html" %}
+{% load i18n %}
 
-
-<h2> Add Bid</h2>
+<h2> {% trans "Add Auction" %}</h2>
 {% block content %}
 
-<p><b>Confirm the creation of a bid</b></p>
+<p><b>{% trans "Confirm the creation of an Auction" %}</b></p>
 {% if error %}
   {{ error}}
 {% endif %}
 
-<b>{{b_title}}</b>
-<b>{{b_title}}</b>
-<b>{{b_body}}</b>
-<b>{{b_bid}}</b>
-<b>{{b_res}}</b>
+<p>{{b_title}}</p>
+<p>{{b_body}}</p>
+<p>{{b_bid}}</p>
+<p>{{b_res}}</p>
 
     <form action="/savebid/" method="post">
         {% csrf_token %}

@@ -1,3 +1,4 @@
+{% load i18n %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -32,26 +33,26 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li class="sidebar-brand"> Yet another ebay clone!</li>
-                <li><a href="#">Home</a></li>
+                <li><a href="#">{% trans "Home" %}</a></li>
                 <!--                <li><a href="#">Search bids</a></li>-->
-                <li><a href="#search" data-toggle="collapse">Search bids</a>
+                <li><a href="#search" data-toggle="collapse">{% trans "Search bids" %}</a>
                     <div id="search" class="collapse ">
                         <form class="form-search">
-                            <input type="text" class="form-control" name="search" placeholder="Search for bid" required="" autofocus="" />
-                            <button class="btn btn-lg btn-primary btn-block " type="submit">Search</button>
+                            <input type="text" class="form-control" name="search" placeholder="{% trans "Search for bid" %}" required="" autofocus="" />
+                            <button class="btn btn-lg btn-primary btn-block " type="submit">{% trans "Search" %}</button>
                         </form>
                     </div>
                 </li>
-                <li><a href="#">Bids</a></li>
-                <li><a href="#">Create bids</a></li>
+                <li><a href="#">{% trans "Auctiomss" %}</a></li>
+                <li><a href="#">{% trans "Create Auction" %}</a></li>
                 <li><a href="#">API</a></li>
-                <li><a href="#">About / Documentation</a></li>
+                <li><a href="#">{% trans "About / Documentation" %}</a></li>
                 </br>
                 <div>
                     <div class="">
                         <ul class="nav nav-tabs" id="sync-tabs">
-                            <li class="active text-center "><a class="text-center" data-toggle="tab" href="#home">Login</a> </li>
-                            <li class=""><a data-toggle="tab" href="#menu1">Register</a></li>
+                            <li class="active text-center "><a class="text-center" data-toggle="tab" href="#home">{% trans "Login" %}</a> </li>
+                            <li class=""><a data-toggle="tab" href="#menu1">{% trans "Register" %}</a></li>
                         </ul>
                     </div>
                     <div class="tab-content ">
@@ -63,7 +64,7 @@
                                     <div class="loginclass">
                                     {{ form.as_ul }}
                                     </div>
-                                    <button class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+                                    <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Login" %}</button>
                                 </form>
                             </div>
                         </div>
@@ -71,10 +72,10 @@
                             <div class="">
                                 <form class="form-signin">
                                     <!--<h2 class="form-signin-heading">Register</h2>-->
-                                    <input type="text" class="form-control" name="username" placeholder="Email Address" required="" autofocus="" />
-                                    <input type="password" class="form-control" name="password" placeholder="Password" required="" />
-                                    <input type="password" class="form-control" name="password" placeholder="Type Password Again" required="" />
-                                    <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+                                    <input type="text" class="form-control" name="username" placeholder="{% trans "Email Address" %}" required="" autofocus="" />
+                                    <input type="password" class="form-control" name="password" placeholder="{% trans "Password" %}" required="" />
+                                    <input type="password" class="form-control" name="password" placeholder="{% trans "Type Password Again" %}" required="" />
+                                    <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Register" %}</button>
                                 </form>
                             </div>
                         </div>

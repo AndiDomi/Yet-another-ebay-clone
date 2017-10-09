@@ -1,13 +1,13 @@
 {% extends 'index.html' %}
-
-{% block title %}Edit your bid{% endblock %}
+{% load i18n %}
+{% block title %}{% trans "Edit your bid" %} {% endblock %}
 
 {% block content %}
 
-<p><b>Edit Bid: {{ title }}</b></p>
+<p><b>{% trans "Edit Bid:" %}. {{ title }}</b></p>
     <form action="/updatebid/{{ id }}/" method="post">
         {%  csrf_token %}
-       <p>Details: <textarea name="details" cols="50" rows="20">{{ bid_details }}</textarea></p>
+       <p>{% trans " Details:"%}  <textarea name="details" cols="50" rows="20">{{ bid_details }}</textarea></p>
         <input type="submit" value="Change">
     </form>
 

@@ -1,28 +1,46 @@
-{% extends 'index.html' %}
 
+{% extends 'index.html' %}
+{% load i18n %}
 {% block content %}
 
 {%  for bids in bid %}
-    <h4> {{ bids.title }} </h4> {% ifequal bids.author authuser%}
-                                            <a href="/editbid/{{ bids.id }}/">Edit bid</a>
+    <h4> {{ bids.title }} </h4>
+
+    {% ifequal bids.active 0 %}
+    <p>{% trans "Auction is not active! No bid and modification can be done on this Auction!" %}</p>
+    <p>{% trans "Auction created by" %}: <b> {{ bids.author }} </b></p>
+    <p>{% trans "Auction created on" %}: <b> {{ bids.timestamp }}</b> </p>
+    <p>{% trans "Auction ends at" %}: <b>{{ bids.bid_res }}</b></p>
+    <p>{% trans "Details" %}: <b>{{ bids.details }}</b></p>
+    {% trans "The winner of this auction is" %}: {{ bids.bid_by }}: <b>{{ bids.bid }}</b>
+        <br>
+    <br>
+    <br>
+
+    {%  else %}
+    {% ifequal bids.author authuser%}
+                                            <a href="/editbid/{{ bids.id }}/">{% trans "Edit Auction" %}</a>
                                             {% endifequal %}
 
-    <p>Bid created by: <b> {{ bids.author }} </b></p>
-    <p>Bid created on: <b> {{ bids.timestamp }}</b> </p>
-    <p>Hours remaining before bid ends: <b>{{ bids.bid_res }}</b></p>
-    <p>Details: <b>{{ bids.details }}</b></p>
-    Current bid made by {{ bids.bid_by }}: <b>{{ bids.bid }}</b>
+    <p>{% trans "Auction created by" %}: <b> {{ bids.author }} </b></p>
+    <p>{% trans "Auction created on" %}: <b> {{ bids.timestamp }}</b> </p>
+    <p>{% trans "Auction ends at" %}: <b>{{ bids.bid_res }}</b></p>
+    <p>{% trans "Details" %}: <b>{{ bids.details }}</b></p>
+    {% trans "Current bid made by" %} {{ bids.bid_by }}: <b>{{ bids.bid }} on : {{ bids.bid_res }}</b>
     <p>
     {% if guest %}
     {{ guest }}
         </p>
+
     {% endif %}
+
+
 
     {% if not guest  %}
         {% ifnotequal bids.author authuser %}
         <form action="/makebid/{{ bids.id }}/" method="post">
         {%  csrf_token %}
-        <input type="number" step="0.01" name="bid" min="{{ bids.bid }}+0.01" required="" id="bid" placeholder={{ bids.bid }}><input type="submit" value="Bid">
+        <input type="number" step="0.01" name="bid" min="{{ bids.bid}}" required="" id="bid" placeholder={{ bids.bid }}><input type="submit" value="Bid">
         </form>
         {% endifnotequal %}
     {% endif %}
@@ -30,8 +48,19 @@
     <br>
     <br>
     <br>
-{% empty %}
-    <p>No bids<p>
+     {%  endifequal %}
+        {% empty %}
+    <p>{% trans "No bids" %}<p>
+
+
+
+
+
+
+
+
+
+
 {%  endfor %}
 
 {% endblock %}
