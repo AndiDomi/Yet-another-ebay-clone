@@ -13,12 +13,6 @@
 
                 <form class="form-editPass" action="/editprofile/{{ request.user.id }}" method="get">
                     {%  csrf_token %}
-                    <select name="dropdown">
-                    <option  disabled selected>Select language:</option>
-                    <option value='en'>English</option>
-                    <option value='al'>Albanian</option>
-
-                </select>
 
                     <!--<h2 class="form-signin-heading">Register</h2>-->
                     <h4>Edit your password</h4>

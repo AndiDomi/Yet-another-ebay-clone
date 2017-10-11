@@ -38,6 +38,9 @@ urlpatterns = [
     url(r'^banbid/(\d+)/$', delete_auction),
     url(r'^editprofile/(\d+)/$', changelanguage,name='editprofile'),
     url(r'^editP/$', editP,name='editprofile'),
+    url(r'^editL/$', editL,name='editL'),
+
+
     #path('i18n/', include('django.conf.urls.i18n')),
 
 

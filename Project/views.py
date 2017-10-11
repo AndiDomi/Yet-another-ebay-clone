@@ -215,16 +215,6 @@ def changelanguage(request,iduser):
             user.email=request.GET['email']
             user.save()
 
-        language = request.GET['dropdown']
-        print(language)
-
-        if language=='en':
-            translation.activate('en')
-            request.session[translation.LANGUAGE_SESSION_KEY] = 'en'
-        if language=='al':
-            translation.activate('al')
-            request.session[translation.LANGUAGE_SESSION_KEY] = 'al'
-
 
     except  User.DoesNotExist:
         messages.add_message(request, messages.INFO, "User doesnt exist, stop hacking my page!")
@@ -236,3 +226,17 @@ def changelanguage(request,iduser):
 
 def editP(request):
     return render(request, "editprofile.html")
+
+
+def editL(request):
+    print("hello editL")
+    language = request.POST['dropdown']
+
+    if language == 'en':
+        translation.activate('en')
+        request.session[translation.LANGUAGE_SESSION_KEY] = 'en'
+    if language == 'al':
+        translation.activate('al')
+        request.session[translation.LANGUAGE_SESSION_KEY] = 'al'
+    messages.add_message(request, messages.INFO, "Changes to language made!")
+    return HttpResponseRedirect(reverse("home"))

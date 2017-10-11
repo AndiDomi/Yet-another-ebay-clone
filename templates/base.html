@@ -70,6 +70,33 @@
             {% endfor %}
         </ul>
     {% endif %}
+{% comment %}                    <form class="form-editPass" action="/editprofile/" method="get">
+                    {%  csrf_token %}
+                    <select name="dropdown">
+                    <option  disabled selected>Select language:</option>
+                    <option value='en'>English</option>
+                    <option value='al'>Albanian</option>
+
+                </select>
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Edit Language</button>
+                </form>{% endcomment %}
+
+
+
+
+                <form class="form-editPass" action="/editL/" method="POST">
+                    {%  csrf_token %}
+                    <select name="dropdown">
+                    <option  disabled selected>Select language:</option>
+                    <option value='en'>English</option>
+                    <option value='al'>Albanian</option>
+
+                </select>
+                    <button class="btn btn-sm btn-primary "  type="submit">Edit</button>
+                </form>
+
+
+
 
 
         </ul>
@@ -87,6 +114,7 @@
                         </div>
                     </a>
                 </div>
+
                 <div class="footer_message alert alert-success text-center col-lg-11 hidden"></div>
             </div>
         </nav>
@@ -116,6 +144,7 @@
     <script src="http://protostrap.com/Assets/parsely/2.0/parsley.js" type="text/javascript"></script>
     <script src="http://protostrap.com/Assets/download.js" type="text/javascript"></script>
     <script src="http://protostrap.com/Assets/protostrap.js" type="text/javascript"></script>
+
 <script>
     $("#menu-toggle").click(function (e) {
         e.preventDefault();
