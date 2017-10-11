@@ -10,15 +10,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import auth
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from Project.models import Auction
-from datetime import datetime
+from datetime import datetime, timedelta
 from django.conf import settings
 from django.core.paginator import Paginator
+from django.utils import translation
 
 
 
@@ -45,8 +46,9 @@ def register(request):
 @method_decorator(login_required, name="dispatch")
 class Createbid(View):
     def get(self, request):
-
-        return render(request, 'createbid2.html')
+        time_min=datetime.now()+ timedelta(hours=72)
+        time_min=str(time_min.strftime('%Y-%m-%dT%H:%m'))
+        return render(request, 'createbid.html',{'time':time_min})
 
 
     def post(self, request):
@@ -65,7 +67,7 @@ class Createbid(View):
                                                        "b_bid": bid_bid,
                                                        "b_res": bid_res})
         else:
-            messages.add_message(request, messages.ERROR, "Not valid data")
+            messages.add_message(request, messages.ERROR, )
             return render(request, 'createbid.html', {'form': form, })
 
 
@@ -92,7 +94,7 @@ def savebid(request):
 def archive(request):
 
     bid = Auction.objects.order_by('-timestamp')
-    bid2= Auction.objects.all()
+    bid2 = Auction.objects.all()
 
     for a in bid2:
         a2 = datetime.now()
@@ -192,3 +194,45 @@ def search(request):
         else:
             return render(request, "bidlist.html",{'bid':bid,
                                                'guest':'Your are not loged in, please log in to bid!'})
+
+def delete_auction(request,id):
+    if request.method=="GET":
+        Auction.objects.get(pk=id).delete()
+        messages.add_message(request, messages.INFO, "Auction banned!")
+    return HttpResponseRedirect(reverse("home"))
+
+
+
+def changelanguage(request,iduser):
+    try:
+        user = User.objects.get(id=iduser)
+        print(user.password)
+        if request.GET['password']:
+            user.set_password(request.GET['password'])
+            user.save()
+            print(user.password)
+        if request.GET['email']:
+            user.email=request.GET['email']
+            user.save()
+
+        language = request.GET['dropdown']
+        print(language)
+
+        if language=='en':
+            translation.activate('en')
+            request.session[translation.LANGUAGE_SESSION_KEY] = 'en'
+        if language=='al':
+            translation.activate('al')
+            request.session[translation.LANGUAGE_SESSION_KEY] = 'al'
+
+
+    except  User.DoesNotExist:
+        messages.add_message(request, messages.INFO, "User doesnt exist, stop hacking my page!")
+
+
+    messages.add_message(request, messages.INFO, "Changes to profile made!")
+
+    return HttpResponseRedirect(reverse("home"))
+
+def editP(request):
+    return render(request, "editprofile.html")

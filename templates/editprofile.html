@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load i18n %}
+{% block navigation %}
+    {% if request.user.is_authenticated %}
+
+        <ul class="nav nav-tabs" id="sync-tabs">
+            <li class="hi"><a href="/">{% trans "Profile" %}</a></li>
+            <li class="clear hi active"><a data-toggle="tab" href="#menu3">{% trans "Edit Profile" %}</a></li>
+        </ul>
+        </div>
+        <div id="menu3" class="tab-pane fade fade in active ">
+            <div id="menu3" class="tab-pane fade col-lg-12 active in">
+
+                <form class="form-editPass" action="/editprofile/{{ request.user.id }}" method="get">
+                    {%  csrf_token %}
+                    <select name="dropdown">
+                    <option  disabled selected>Select language:</option>
+                    <option value='en'>English</option>
+                    <option value='al'>Albanian</option>
+
+                </select>
+
+                    <!--<h2 class="form-signin-heading">Register</h2>-->
+                    <h4>Edit your password</h4>
+                    <input type="email" class="form-control" name="email" placeholder="Email">
+                    <input type="password" class="form-control" name="password" placeholder="Type Password Again">
+                    <button class="btn btn-lg btn-primary btn-block" type="submit">Edit profile</button>
+                </form>
+            </div>
+        </div>
+        </div>
+
+
+
+
+
+    {% else %}
+
+        <ul class="nav nav-tabs" id="sync-tabs">
+            <li class="active text-center "><a class="text-center" href="/login/">{% trans "Login" %}</a></li>
+            <li class=""><a href="/register/">{% trans "Register" %}</a></li>
+        </ul>
+
+        <h4>{% trans "Welcome Guest, please click the above button to login or register" %}</h4>
+
+        </div>
+
+    {% endif %}
+{% endblock %}

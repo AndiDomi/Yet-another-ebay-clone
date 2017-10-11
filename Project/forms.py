@@ -21,10 +21,10 @@ class SignUpForm(UserCreationForm):
 
 
 class CreateBid(forms.Form):
-    title = forms.CharField(max_length=200,label='Title of the auction ')
-    details = forms.CharField(widget=forms.Textarea(), required=False, label="The description of the auction ")
-    bid = forms.DecimalField(max_digits=10,decimal_places=2,label="Starting bid (€) ")
-    bid_res = forms.DateField(input_formats=['%Y-%M-%D '],label="Time for the bid to be active (minimum is set to 72h)")
+    title = forms.CharField(max_length=200)
+    details = forms.CharField(widget=forms.Textarea(), required=False)
+    bid = forms.DecimalField(max_digits=10,decimal_places=2)
+    bid_res = forms.CharField()
 
 
 

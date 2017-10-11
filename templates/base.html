@@ -48,13 +48,12 @@
             <li><a href="#search" data-toggle="collapse">{% trans "Search Auction" %}</a>
                 <div id="search" class="collapse ">
                     <form class="form-search" action="/search/" method="get">
-                        <input type="text" class="form-control" name="id" placeholder={% trans "Search for bid" %}required=""
+                        <input type="text" class="form-control" name="id" placeholder={% trans "Search for Auction" %}required=""
                                autofocus=""/>
                         <button class="btn btn-lg btn-primary btn-block " type="submit">{% trans "Search" %}</button>
                     </form>
                 </div>
             </li>
-            <li><a href="#">{% trans "Auctions" %}</a></li>
             <li><a href="/add/">{% trans "Create Auction" %}</a></li>
             <li><a href="#">API</a></li>
             <li><a href="#">{% trans "About / Documentation" %}</a></li>

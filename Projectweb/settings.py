@@ -139,7 +139,7 @@ USE_I18N = True
 #from django.utils.translation import ugettext_lazy as _
 LANGUAGES = (
     ('en', _('English')),
-    ('it', _('Italian')),
+    ('al', _('Albanian')),
 )
 
 LOCALE_PATHS = (
@@ -147,8 +147,9 @@ LOCALE_PATHS = (
 )
 
 # https://stackoverflow.com/questions/23353113/django-admin-py-makemessages-not-working
+# https://docs.djangoproject.com/en/dev/topics/i18n/translation/#the-set-language-redirect-view
 
-# this one works django-admin.py makemessages -l it
+# this one works exitit
 
 #DATETIME_FORMAT = '%d-%m-%Y %H:%M:S'
 

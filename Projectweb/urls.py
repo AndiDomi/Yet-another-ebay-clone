@@ -35,6 +35,11 @@ urlpatterns = [
     url(r'^search/', search),
     url(r'^updatebid/(\d+)/$', updatebid),
     url(r'^makebid/(\d+)/$', makebid),
+    url(r'^banbid/(\d+)/$', delete_auction),
+    url(r'^editprofile/(\d+)/$', changelanguage,name='editprofile'),
+    url(r'^editP/$', editP,name='editprofile'),
+    #path('i18n/', include('django.conf.urls.i18n')),
+
 
 ]
 
