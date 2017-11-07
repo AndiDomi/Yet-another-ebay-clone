@@ -22,6 +22,12 @@ class Auction(models.Model):
         ordering = ['timestamp']
 
 class Bids(models.Model):
-    bid = models.DecimalField(primary_key=True,max_digits=10,decimal_places=1)
-    auction = models.ForeignKey(Auction.id)
-    bid_by = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,related_name="bid_by")
+    id = models.AutoField(primary_key=True)
+    bid = models.DecimalField(max_digits=10,decimal_places=1,default=0.01)
+    auction = models.ForeignKey(Auction, on_delete=models.CASCADE)
+    bid_by = models.ForeignKey(User, null=True, blank=True)
+
+#class User_profile(models.Model):
+#    # why would we add null true and blank true in here?
+#    user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,null=True, blank=True)
+#    language= models.CharField(max_length=3,default="en")

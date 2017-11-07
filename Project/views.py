@@ -83,11 +83,20 @@ def savebid(request):
         b_details = request.POST.get('b_details', '')
         b_bid = request.POST.get('b_bid', )
         b_res = request.POST.get('b_res', )
-        bid_save = Auction(title=b_title, details=b_details, bid=b_bid, bid_res=b_res, timestamp=datetime.now(),
-                           author= request.user,bid_by= request.user,active=1)
-        bid_save.save()
+        print User.objects.get(username=request.user)
+        auction_save = Auction.objects.create(title=b_title, details=b_details, bid_res=b_res, timestamp=datetime.now(),
+                           author=request.user, active=1)
+        auction_save.save()
+
+        bid_user=User.objects.get(username=request.user)
+        bids_save=Bids.objects.create(
+            bid=b_bid,
+            auction=auction_save,
+            bid_by=bid_user
+        )
+        bids_save.save()
         messages.add_message(request, messages.INFO, "New bid has been saved")
-        sendMailAuthor(bid_save)
+        sendMailAuthor(bid_user,auction_save,b_bid)
         return HttpResponseRedirect(reverse("home"))
     else:
         return HttpResponseRedirect(reverse("home"))
@@ -272,11 +281,11 @@ def sendMailAll(what_happened,auction_ID):
     print(a)
     #send_mail('subject', what_happened, 'noreply@parsifal.co',a)
 
-def sendMailAuthor(bidsave):
-    user = User.objects.get(username=bidsave.author)
+def sendMailAuthor(user2,bidsave,bid):
+    user = User.objects.get(username=user2)
     sent_TO = str(user.email)
     print (sent_TO)
-    email_message= " Hello "+ str(bidsave.author)+ '! You just created a bid with Title : "'+ str(bidsave.title)+\
-                   '" with Detail: "' + str(bidsave.details) + '" bid resoultion time: ' + str(bidsave.bid_res) + " and minimum bid of " + str(bidsave.bid)
-    send_mail('subject', email_message, 'imAwesome@andi.comi',[user.email])
+    email_message= " Hello "+ str(user)+ '! You just created a bid with Title : "'+ str(bidsave.title)+\
+                   '" with Detail: "' + str(bidsave.details) + '" bid resoultion time: ' + str(bidsave.bid_res) + " and minimum bid of " + str(bid)
+    send_mail('subject', email_message, 'imAwesome@andi.domi',[user.email])
 
