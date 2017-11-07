@@ -1,0 +1,172 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-10 19:04+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: Projectweb/settings.py:141
+msgid "English"
+msgstr "Anglisht"
+
+#: Projectweb/settings.py:142
+msgid "Albanian"
+msgstr "Shqip"
+
+#: templates/base.html:48 templates/logout.html:38
+msgid "Search Auction"
+msgstr "Kerko ankand"
+
+#: templates/base.html:51 templates/logout.html:41
+#, fuzzy
+#| msgid "Search Auction"
+msgid "Search for Auction"
+msgstr "Kerko ankandin"
+
+#: templates/base.html:53 templates/logout.html:42
+msgid "Search"
+msgstr "Kerko"
+
+#: templates/base.html:57 templates/logout.html:46
+msgid "Auctions"
+msgstr "Ankand"
+
+#: templates/base.html:58 templates/logout.html:47
+msgid "Create Auction"
+msgstr "Krijo Ankand"
+
+#: templates/base.html:60 templates/logout.html:49
+msgid "About / Documentation"
+msgstr "Reth / Dokumentacion"
+
+#: templates/bidlist.html:10
+msgid ""
+"Auction is not active! No bid and modification can be done on this Auction!"
+msgstr ""
+" Ankandi nuk eshte me aktiv ! Ju nuk mund te beni nje oferte si dhe te "
+"modifikoni Ankandin "
+
+#: templates/bidlist.html:12 templates/bidlist.html:28
+#: templates/bidlist.html:48
+msgid "Click here to Ban Auction!"
+msgstr "Kliko ketu per te bere Ban Ankandin"
+
+#: templates/bidlist.html:14 templates/bidlist.html:30
+msgid "Auction created by"
+msgstr "Ankandi i krujuar nga"
+
+#: templates/bidlist.html:15 templates/bidlist.html:31
+msgid "Auction created on"
+msgstr "Ankand i krijuar ne"
+
+#: templates/bidlist.html:16 templates/bidlist.html:32
+msgid "Auction ends at"
+msgstr "Ankandi mbaron ne"
+
+#: templates/bidlist.html:17 templates/bidlist.html:33
+msgid "Details"
+msgstr "Detaje"
+
+#: templates/bidlist.html:18
+msgid "The winner of this auction is"
+msgstr "Fituesi i ketij Ankandi eshte"
+
+#: templates/bidlist.html:25
+msgid "Edit Auction"
+msgstr "Ndrysho Ankandin"
+
+#: templates/bidlist.html:34
+msgid "Current bid made by"
+msgstr "Oferta e fundit e bere nga"
+
+#: templates/bidlist.html:61
+msgid "No bids"
+msgstr "Ska oferta"
+
+#: templates/changepass.html:6 templates/changepass.html:27
+#: templates/editprofile.html:35 templates/index.html:29 templates/login.html:6
+#: templates/login.html:27 templates/logout.html:54 templates/logout.html:67
+#: templates/register.html:5
+msgid "Login"
+msgstr "Logohu"
+
+#: templates/changepass.html:7 templates/editprofile.html:36
+#: templates/index.html:30 templates/login.html:7 templates/logout.html:55
+#: templates/logout.html:78 templates/register.html:7
+#: templates/register.html:23
+msgid "Register"
+msgstr "Rregjistrohu"
+
+#: templates/editbid.html:3
+msgid "Edit your bid"
+msgstr "Modifiko Ankandin"
+
+#: templates/editbid.html:7
+msgid "Edit Bid:"
+msgstr "Mod. Ankand"
+
+#: templates/editbid.html:10
+#, fuzzy
+#| msgid "Details:"
+msgid " Details:"
+msgstr " Detaje"
+
+#: templates/editprofile.html:7 templates/index.html:8
+msgid "Profile"
+msgstr "Profili"
+
+#: templates/editprofile.html:8 templates/index.html:9
+msgid "Edit Profile"
+msgstr ""
+
+#: templates/editprofile.html:39 templates/index.html:33
+msgid "Welcome Guest, please click the above button to login or register"
+msgstr ""
+"Mireserdhe i panjohur, klikoni me lartu per tu loguar ose per tu rregjistruar"
+
+#: templates/index.html:14
+msgid "Welcome"
+msgstr "Mireserdhe"
+
+#: templates/index.html:20
+msgid "Logout"
+msgstr "Logohu"
+
+#: templates/logout.html:36
+msgid "Home"
+msgstr "Home"
+
+#: templates/logout.html:75
+msgid "Email Address"
+msgstr "Adresa e Emailit"
+
+#: templates/logout.html:76
+msgid "Password"
+msgstr "Paswordi"
+
+#: templates/logout.html:77
+msgid "Type Password Again"
+msgstr "Shkruaj perseri Paswordin"
+
+#: templates/wizardtest.html:4
+msgid "Add Auction"
+msgstr "Krijo Ankand"
+
+#: templates/wizardtest.html:7
+msgid "Confirm the creation of an Auction"
+msgstr "Komfirmo krijimin e nje Ankandi"
+
+#~ msgid "Search bids"
+#~ msgstr "Kerko Ankand"

@@ -35,7 +35,7 @@ urlpatterns = [
     url(r'^search/', search),
     url(r'^updatebid/(\d+)/$', updatebid),
     url(r'^makebid/(\d+)/$', makebid),
-    url(r'^banbid/(\d+)/$', delete_auction),
+    url(r'^banbid/(\d+)/$', bann_auction),
     url(r'^editprofile/(\d+)/$', changelanguage,name='editprofile'),
     url(r'^editP/$', editP,name='editprofile'),
     url(r'^editL/$', editL,name='editL'),
