@@ -8,7 +8,7 @@
 
     {% ifequal bids.active 0 %}
     <p>{% trans "Auction is not active! No bid and modification can be done on this Auction!" %}</p>
-        {% if bids.author.is_superuser %}
+        {% if request.user.is_superuser %}
         <a href="/banbid/{{ bids.id }}/">{% trans "Click here to Ban Auction!" %}</a>
         {% endif %}
     <p>{% trans "Auction created by" %}: <b> {{ bids.author }} </b></p>
@@ -24,7 +24,7 @@
     {% ifequal bids.author authuser%}
                                             <a href="/editbid/{{ bids.id }}/">{% trans "Edit Auction" %}</a>
                                             {% endifequal %}
-            {% if bids.author.is_superuser %}
+            {% if request.user.is_superuser %}
         <a href="/banbid/{{ bids.id }}/">{% trans "Click here to Ban Auction!" %}</a>
         {% endif %}
     <p>{% trans "Auction created by" %}: <b> {{ bids.author }} </b></p>
@@ -42,15 +42,15 @@
 
 
     {% if not guest  %}
-        {% ifnotequal bids.author authuser %}
+        {% if bids.author != authuser and bids.bid_by != authuser%}
         <form action="/makebid/{{ bids.id }}/" method="post">
-                {% if bids.author.is_superuser %}
+                {% if request.user.is_superuser %}
         <a href="/banbid/{{ bids.id }}/">{% trans "Click here to Ban Auction!" %}</a>
         {% endif %}
         {%  csrf_token %}
         <input type="number" step="0.01" name="bid" min="{{ bids.bid}}" required="" id="bid" placeholder={{ bids.bid }}><input type="submit" value="Bid">
         </form>
-        {% endifnotequal %}
+        {% endif %}
     {% endif %}
     </p>
     <br>

@@ -11,16 +11,17 @@ class Auction(models.Model):
     title = models.CharField(max_length=200, null=True)
     author = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,related_name="author")
     details = models.TextField(null=True)
-    bid = models.DecimalField(max_digits=10,decimal_places=1,null=True)
-    bid_by = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,related_name="bid_by")
-    # todo: fix this to be a date
     bid_res = models.DateTimeField(null=True)
     timestamp = models.DateTimeField(null=True)
-    # Todo: add active or not
     active = models.IntegerField()
-
+    banned = models.BooleanField(default=False)
     def __unicode__(self):
         return self.title
 
     class Meta:
         ordering = ['timestamp']
+
+class Bids(models.Model):
+    bid = models.DecimalField(primary_key=True,max_digits=10,decimal_places=1)
+    auction = models.ForeignKey(Auction.id)
+    bid_by = models.ForeignKey(settings.AUTH_USER_MODEL,null=True,related_name="bid_by")
