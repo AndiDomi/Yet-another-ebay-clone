@@ -96,7 +96,8 @@ def savebid(request):
         )
         bids_save.save()
         messages.add_message(request, messages.INFO, "New bid has been saved")
-        sendMailAuthor(bid_user,auction_save,b_bid)
+        #sendMailAuthor(bid_user,auction_save,b_bid)
+        sendMailAll("soemthing bad",auction_save)
         return HttpResponseRedirect(reverse("home"))
     else:
         return HttpResponseRedirect(reverse("home"))
@@ -105,8 +106,11 @@ def savebid(request):
 
 ## todo: add api
 def archive(request):
-
     ##check if bid is active
+
+    sendMailAll("nothing",7)
+    #for p in User.objects.raw('SELECT email from auth_user WHERE auth_user.username = "Andi"'):
+        #print (str(p))
     isBidActive(Auction.objects.all())
 
     # if superuser
@@ -143,11 +147,6 @@ def editbid(request, offset):
                 "bid_res": bid.bid_res,
                 "bid_by": bid.bid_by
                     })
-
-
-
-
-
 
 
 ## todo: add concurrncy
@@ -273,15 +272,21 @@ def isBidActive(bid2):
 
 
 # send emails to the one who are partecipating in this auction
-def sendMailAll(what_happened,auction_ID):
-    auction = Auction.objects.get(pk=auction_ID)
-    auction.bid_by
-    user = User.objects.get(username=auction.bid_by)
-    a = user.email
-    print(a)
-    #send_mail('subject', what_happened, 'noreply@parsifal.co',a)
+def sendMailAll(what_happened,auction):
+    send_spam_to=[]
+    for p in  User.objects.raw('SELECT Project_bids.bid_by_id as id from Project_bids WHERE Project_bids.auction_id='+str(auction)):
+        print p
+        send_spam_to.append(User.objects.get(username=p).email)
+
+    #for p in Bids.objects.raw('SELECT auth_user.email from auth_user WHERE auth_user.username = '
+    #                          '(SELECT Project_bids.bid_by_id as id FROM Project_bids WHERE auction_id='+str(auction.id)+')'):
+    #    print p
+
+    send_mail('subject', what_happened, 'noreply@parsifal.co',send_spam_to)
+
 
 def sendMailAuthor(user2,bidsave,bid):
+
     user = User.objects.get(username=user2)
     sent_TO = str(user.email)
     print (sent_TO)

@@ -22,7 +22,7 @@ class Auction(models.Model):
         ordering = ['timestamp']
 
 class Bids(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True,unique=True)
     bid = models.DecimalField(max_digits=10,decimal_places=1,default=0.01)
     auction = models.ForeignKey(Auction, on_delete=models.CASCADE)
     bid_by = models.ForeignKey(User, null=True, blank=True)
