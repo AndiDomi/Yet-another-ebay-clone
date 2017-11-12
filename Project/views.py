@@ -17,21 +17,34 @@ from django.core.urlresolvers import reverse
 from django.contrib import messages
 from Project.models import Auction
 from Project.models import Bids
-from datetime import datetime, timedelta
+from Project.models import User_profile
+from datetime import datetime, timedelta, date, time
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.utils import translation
 from django.core.mail import send_mail
 
+from django.contrib.auth.signals import user_logged_in
+
+# function that runs when we log in
+# in this case it just changes the language to the user prefered one
+def on_login_do(sender, user, request, **kwargs):
+    language= user.user_profile.language
+    translation.activate(language)
+    request.session[translation.LANGUAGE_SESSION_KEY] = language
+# when user logs in funciton
+user_logged_in.connect(on_login_do)
+
+
 # TODO: check if the bid is active in all the views that are called
 
-## done
 def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
             new_user = form.save()
-
+            userprofile = User_profile.objects.create(user=new_user, language='en')
+            userprofile.save()
             messages.add_message(request, messages.INFO, "New User is created. Please Login")
 
             return HttpResponseRedirect(reverse("home"))
@@ -47,8 +60,20 @@ def register(request):
 @method_decorator(login_required, name="dispatch")
 class Createbid(View):
     def get(self, request):
-        time_min=datetime.now()+ timedelta(hours=72)
-        time_min=str(time_min.strftime('%Y-%m-%dT%H:%m'))
+        # global time_min
+        # s=datetime.now()
+        # print(s)
+        # mytime = datetime.strptime(s, "%Y-%m-%d %H:%M:%S")
+        # mytime += timedelta(hours=72)
+        # print(mytime.strftime("%Y-%m-%dT%H:%M:%S"))
+        # time_min=str(time_min.strftime())
+        # print(time_min+"eh?")
+        global time_min
+        time_min = datetime.now() + timedelta(hours=72)
+        print(datetime.now())
+        time_min=time_min.strftime('%Y-%m-%dT%H:%M')
+        #2017 - 06 - 01T08: 30
+        print(time_min)
         return render(request, 'createbid.html',{'time':time_min})
 
 
@@ -60,6 +85,9 @@ class Createbid(View):
             bid_details = cd['details']
             bid_bid = cd['bid']
             bid_res = cd['bid_res']
+            if bid_res < time_min:
+                bid_res =  time_min
+
             print("cd bid",bid_res)
             form = confBid()
             return render(request, 'wizardtest.html', {'form': form,
@@ -82,22 +110,24 @@ def savebid(request):
         b_title = request.POST.get('b_title', '')
         b_details = request.POST.get('b_details', '')
         b_bid = request.POST.get('b_bid', )
+        print(b_bid)
         b_res = request.POST.get('b_res', )
-        print User.objects.get(username=request.user)
+        bid_user = User.objects.get(username=request.user.username)
+
         auction_save = Auction.objects.create(title=b_title, details=b_details, bid_res=b_res, timestamp=datetime.now(),
-                           author=request.user, active=1)
+                           author=request.user, active=1,last_bid=b_bid, last_bider=bid_user)
         auction_save.save()
 
-        bid_user=User.objects.get(username=request.user)
+
         bids_save=Bids.objects.create(
             bid=b_bid,
+
             auction=auction_save,
             bid_by=bid_user
         )
+        print(b_bid)
         bids_save.save()
         messages.add_message(request, messages.INFO, "New bid has been saved")
-        #sendMailAuthor(bid_user,auction_save,b_bid)
-        sendMailAll("soemthing bad",auction_save)
         return HttpResponseRedirect(reverse("home"))
     else:
         return HttpResponseRedirect(reverse("home"))
@@ -106,29 +136,30 @@ def savebid(request):
 
 ## todo: add api
 def archive(request):
-    ##check if bid is active
 
-    sendMailAll("nothing",7)
-    #for p in User.objects.raw('SELECT email from auth_user WHERE auth_user.username = "Andi"'):
-        #print (str(p))
-    isBidActive(Auction.objects.all())
+    t=datetime.now()+timedelta(hours=72)
+    t.strftime("%Y-%m-%d %H:%M:%S")
 
     # if superuser
     if request.user.is_superuser:
-        bid = Auction.objects.order_by('-timestamp')
-        return render(request, "bidlist.html", {'bid': bid,
-                                            'authuser': request.user})
+        auction = Auction.objects.order_by('-timestamp')
+        return render(request, "bidlist.html", {'auction': auction,
+                                            'authuser': request.user.username})
+
 
     # if normal user
     elif request.user.is_authenticated():
-        bid = Auction.objects.filter(banned=False).order_by('-timestamp')
-        return render(request, "bidlist.html",{'bid':bid,
-                                               'authuser': request.user})
+        auction = Auction.objects.filter(banned=False).order_by('-timestamp')
+
+        return render(request, "bidlist.html",{'auction':auction,
+                                               'authuser': request.user.username})
+
     #if guest
     else:
-        bid = Auction.objects.filter(banned=False).order_by('-timestamp')
-        return render(request, "bidlist.html", {'bid': bid,
+        auction = Auction.objects.filter(banned=False).order_by('-timestamp')
+        return render(request, "bidlist.html", {'auction': auction,
                                                 'guest': 'Your are not loged in, please log in to bid!'})
+
 
 
 
@@ -137,21 +168,22 @@ def editbid(request, offset):
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     else:
-        bid = get_object_or_404(Auction, id=offset)
+        auction = get_object_or_404(Auction, id=offset)
+        bid = get_object_or_404(Bids,id=offset)
 
         return render(request, "editbid.html",
-                {'author': request.user,
-                "title": bid.title,
+                {'author': auction.author,
+                "title": auction.title,
                 "id": bid.id,
-                "bid_details": bid.details,
-                "bid_res": bid.bid_res,
+                "bid_details": auction.details,
+                "bid_res": auction.bid_res,
                 "bid_by": bid.bid_by
                     })
 
 
 ## todo: add concurrncy
 def updatebid(request, offset):
-    bids = Auction.objects.filter(id= offset)
+    bids = Auction.objects.filter(id=offset)
     if len(bids) > 0:
         bid = bids[0]
     else:
@@ -159,7 +191,6 @@ def updatebid(request, offset):
         return HttpResponseRedirect(reverse("home"))
 
     if request.method=="POST":
-
         details = request.POST["details"]
         bid.details = details
         bid.save()
@@ -169,7 +200,6 @@ def updatebid(request, offset):
 
 
 ## todo: add concurrency
-## todo: saver user who made the bid
 ## todo: add api
 def makebid(request, offset):
     bids = Auction.objects.filter(id= offset)
@@ -189,25 +219,30 @@ def makebid(request, offset):
 
     return HttpResponseRedirect(reverse("home"))
 
+
+
 # done
 def search(request):
     if request.method == "GET":
         searchText=request.GET["id"]
 
         if request.user.is_superuser:
-            bid = Auction.objects.filter(title__contains=searchText,banned=True)
-            return render(request, "bidlist.html", {'bid': bid,
+            print("is superuser")
+            auction = Auction.objects.filter(title__contains=searchText)
+
+            return render(request, "bidlist.html", {'auction': auction,
                                                     'authuser': request.user})
 
         elif request.user.is_authenticated():
-            bid = Auction.objects.filter(title__contains=searchText,banned=False)
-            return render(request, "bidlist.html", {'bid': bid,
+            auction = Auction.objects.filter(title__contains=searchText,banned=False)
+            return render(request, "bidlist.html", {'auction': auction,
                                                     'authuser': request.user})
 
         else:
-            bid = Auction.objects.filter(title__contains=searchText,banned=False)
-            return render(request, "bidlist.html",{'bid':bid,
+            auction = Auction.objects.filter(title__contains=searchText,banned=False)
+            return render(request, "bidlist.html",{'auction':auction,
                                                'guest':'Your are not loged in, please log in to bid!'})
+
 ## todo: Concurrency?
 def bann_auction(request,id):
     if request.method=="GET":
@@ -222,7 +257,6 @@ def bann_auction(request,id):
 def changelanguage(request,iduser):
     try:
         user = User.objects.get(id=iduser)
-        print(user.password)
         if request.GET['password']:
             user.set_password(request.GET['password'])
             user.save()
@@ -230,8 +264,7 @@ def changelanguage(request,iduser):
         if request.GET['email']:
             user.email=request.GET['email']
             user.save()
-
-    except  User.DoesNotExist:
+    except User.DoesNotExist:
         messages.add_message(request, messages.INFO, "User doesnt exist, stop hacking my page!")
 
 
@@ -242,18 +275,30 @@ def changelanguage(request,iduser):
 def editP(request):
     return render(request, "editprofile.html")
 
-# done
+# function to select langauge and save it
 def editL(request):
-    print("hello editL")
-    print(request.POST['dropdown'])
     if request.POST['dropdown']:
+        # get the language from the request
         language = request.POST['dropdown']
-        if language == 'en':
-            translation.activate('en')
-            request.session[translation.LANGUAGE_SESSION_KEY] = 'en'
-        if language == 'al':
-            translation.activate('al')
-            request.session[translation.LANGUAGE_SESSION_KEY] = 'al'
+
+        # if user is active, save it in database
+        if request.user.is_authenticated():
+            save_language_user=User_profile.objects.get(user=request.user)
+            save_language_user.language=language
+            save_language_user.save()
+            # then select the prefered lengauge
+            translation.activate(language)
+            request.session[translation.LANGUAGE_SESSION_KEY] = language
+
+        else:
+            # if not active just change the leanguage
+            if language == 'en':
+                translation.activate('en')
+                request.session[translation.LANGUAGE_SESSION_KEY] = 'en'
+            if language == 'al':
+                translation.activate('al')
+                request.session[translation.LANGUAGE_SESSION_KEY] = 'al'
+
         messages.add_message(request, messages.INFO, "Changes to language made!")
 
         return HttpResponseRedirect(reverse("home"))
@@ -274,14 +319,9 @@ def isBidActive(bid2):
 # send emails to the one who are partecipating in this auction
 def sendMailAll(what_happened,auction):
     send_spam_to=[]
-    for p in  User.objects.raw('SELECT Project_bids.bid_by_id as id from Project_bids WHERE Project_bids.auction_id='+str(auction)):
-        print p
+    for p in User.objects.raw('SELECT Project_bids.bid_by_id as id from Project_bids WHERE Project_bids.auction_id='+str(auction)):
+        print(User.objects.get(username=p).email)
         send_spam_to.append(User.objects.get(username=p).email)
-
-    #for p in Bids.objects.raw('SELECT auth_user.email from auth_user WHERE auth_user.username = '
-    #                          '(SELECT Project_bids.bid_by_id as id FROM Project_bids WHERE auction_id='+str(auction.id)+')'):
-    #    print p
-
     send_mail('subject', what_happened, 'noreply@parsifal.co',send_spam_to)
 
 
@@ -292,5 +332,5 @@ def sendMailAuthor(user2,bidsave,bid):
     print (sent_TO)
     email_message= " Hello "+ str(user)+ '! You just created a bid with Title : "'+ str(bidsave.title)+\
                    '" with Detail: "' + str(bidsave.details) + '" bid resoultion time: ' + str(bidsave.bid_res) + " and minimum bid of " + str(bid)
-    send_mail('subject', email_message, 'imAwesome@andi.domi',[user.email])
+    send_mail('subject', email_message, 'isAwesome@andi.domi',[user.email])
 

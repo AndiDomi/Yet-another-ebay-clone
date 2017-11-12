@@ -1,65 +1,74 @@
-
 {% extends 'index.html' %}
 {% load i18n %}
 {% block content %}
 
-{%  for bids in bid %}
-    <h4> {{ bids.title }} </h4>
+    {% for auction in auction %}
 
-    {% ifequal bids.active 0 %}
-    <p>{% trans "Auction is not active! No bid and modification can be done on this Auction!" %}</p>
-        {% if request.user.is_superuser %}
-        <a href="/banbid/{{ bids.id }}/">{% trans "Click here to Ban Auction!" %}</a>
-        {% endif %}
-    <p>{% trans "Auction created by" %}: <b> {{ bids.author }} </b></p>
-    <p>{% trans "Auction created on" %}: <b> {{ bids.timestamp }}</b> </p>
-    <p>{% trans "Auction ends at" %}: <b>{{ bids.bid_res }}</b></p>
-    <p>{% trans "Details" %}: <b>{{ bids.details }}</b></p>
-    {% trans "The winner of this auction is" %}: {{ bids.bid_by }}: <b>{{ bids.bid }}</b>
-        <br>
-    <br>
-    <br>
+        <h4> {{ auction.title }} </h4>
 
-    {%  else %}
-    {% ifequal bids.author authuser%}
-                                            <a href="/editbid/{{ bids.id }}/">{% trans "Edit Auction" %}</a>
-                                            {% endifequal %}
+        {% ifequal auction.active 0 %}
+            <p>{% trans "Auction is not active! No bid and modification can be done on this Auction!" %}</p>
             {% if request.user.is_superuser %}
-        <a href="/banbid/{{ bids.id }}/">{% trans "Click here to Ban Auction!" %}</a>
-        {% endif %}
-    <p>{% trans "Auction created by" %}: <b> {{ bids.author }} </b></p>
-    <p>{% trans "Auction created on" %}: <b> {{ bids.timestamp }}</b> </p>
-    <p>{% trans "Auction ends at" %}: <b>{{ bids.bid_res }}</b></p>
-    <p>{% trans "Details" %}: <b>{{ bids.details }}</b></p>
-    {% trans "Current bid made by" %} {{ bids.bid_by }}: <b>{{ bids.bid }}</b>
-    <p>
-    {% if guest %}
-    {{ guest }}
-        </p>
+                <a href="/banbid/{{ auction.id }}/">{% trans "Click here to Ban Auction!" %}</a>
+            {% endif %}
+            <p>{% trans "Auction created by" %}: <b> {{ auction.author }} </b></p>
+            <p>{% trans "Auction created on" %}: <b> {{ auction.timestamp }}</b></p>
+            <p>{% trans "Auction ended at" %}: <b>{{ auction.bid_res }}</b></p>
+            <p>{% trans "Details" %}: <b>{{ auction.details }}</b></p>
+            {% trans "The winner of this auction is" %}: {{ auction.last_bider }}: <b>{{ bids.last_bid }}</b>
+            <br>
+            <br>
+            <br>
 
-    {% endif %}
+        {% else %}
+
+            {% ifequal auction.author authuser %}
+                <label>{{ auction.author }}</label>
+                <a href="/editbid/{{ auction.id }}/">{% trans "Edit Auction" %}</a>
+            {% endifequal %}
+            {% if request.user.is_superuser %}
+                <a href="/banbid/{{ auction.id }}/">{% trans "Click here to Ban Auction!" %}</a>
+            {% endif %}
+            <p>{% trans "Auction created by" %}: <b> {{ auction.author }} </b></p>
+            <p>{% trans "Auction created on" %}: <b> {{ auction.timestamp }}</b></p>
+            <p>{% trans "Auction ends at" %}: <b>{{ auction.bid_res }}</b></p>
+            <p>{% trans "Details" %}: <b>{{ auction.details }}</b></p>
+            {% trans "Current bid made by" %} {{ auction.last_bider }}: <b>{{ auction.last_bid }}</b>
+            <p>
+                {% if guest %}
+                    {{ guest }}
+                    </p>
+
+                {% endif %}
 
 
+            {% if not guest %}
+                {% if auction.author != authuser and auction.last_bider != authuser %}
+                    <label>{{ auction.author }}</label>
+                    <form action="/makebid/{{ auction.id }}/" method="post">
+                        {% if request.user.is_superuser %}
+                            <a href="/banbid/{{ auction.id }}/">{% trans "Click here to Ban Auction!" %}</a>
+                        {% endif %}
+                        {% csrf_token %}
+                        <input type="number" step="0.01" name="bid" min="{{ auction.bid }}" required="" id="bid"
+                               placeholder={{ auction.last_bid }}><input type="submit" value="Bid">
+                    </form>
+                {% else %}
+                    {% if auction.author != authuser and auction.last_bider == authuser %}
+                <label>You cannot bid on your own auction !</label>
+                        {% elif auction.author != authuser and auction.last_bider == authuser %}
+                    <label>You cannot bid as you are tha last user to do so !</label>
+                    {% endif %}
+                    {% endif %}
+            {% endif %}
+            </p>
+            <br>
+            <br>
+            <br>
+        {% endifequal %}
+    {% empty %}
+        <p>{% trans "No bids" %}<p>
 
-    {% if not guest  %}
-        {% if bids.author != authuser and bids.bid_by != authuser%}
-        <form action="/makebid/{{ bids.id }}/" method="post">
-                {% if request.user.is_superuser %}
-        <a href="/banbid/{{ bids.id }}/">{% trans "Click here to Ban Auction!" %}</a>
-        {% endif %}
-        {%  csrf_token %}
-        <input type="number" step="0.01" name="bid" min="{{ bids.bid}}" required="" id="bid" placeholder={{ bids.bid }}><input type="submit" value="Bid">
-        </form>
-        {% endif %}
-    {% endif %}
-    </p>
-    <br>
-    <br>
-    <br>
-     {%  endifequal %}
-        {% empty %}
-    <p>{% trans "No bids" %}<p>
-
-{%  endfor %}
+    {% endfor %}
 
 {% endblock %}

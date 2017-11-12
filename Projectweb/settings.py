@@ -159,3 +159,4 @@ USE_TZ = False # if you plan to disable timezone support
 
 # to send emails localy
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+

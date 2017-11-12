@@ -41,7 +41,6 @@ urlpatterns = [
     url(r'^editL/$', editL,name='editL'),
 
 
-    #path('i18n/', include('django.conf.urls.i18n')),
 
 
 ]
