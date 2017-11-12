@@ -39,9 +39,7 @@ urlpatterns = [
     url(r'^editprofile/(\d+)/$', changelanguage,name='editprofile'),
     url(r'^editP/$', editP,name='editprofile'),
     url(r'^editL/$', editL,name='editL'),
-
-
-
+    url(r'^showDetails/(\d+)/$', showBidDetails,name='showDetails'),
 
 ]
 

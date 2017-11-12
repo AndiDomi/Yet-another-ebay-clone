@@ -21,11 +21,10 @@
             <br>
 
         {% else %}
+            {% if auction.author == authuser %}
+                <a href="/editbid/{{ auction.id }}/">{% trans "Edit Details" %}</a>
+            {% endif %}
 
-            {% ifequal auction.author authuser %}
-                <label>{{ auction.author }}</label>
-                <a href="/editbid/{{ auction.id }}/">{% trans "Edit Auction" %}</a>
-            {% endifequal %}
             {% if request.user.is_superuser %}
                 <a href="/banbid/{{ auction.id }}/">{% trans "Click here to Ban Auction!" %}</a>
             {% endif %}
@@ -46,9 +45,6 @@
                 {% if auction.author != authuser and auction.last_bider != authuser %}
                     <label>{{ auction.author }}</label>
                     <form action="/makebid/{{ auction.id }}/" method="post">
-                        {% if request.user.is_superuser %}
-                            <a href="/banbid/{{ auction.id }}/">{% trans "Click here to Ban Auction!" %}</a>
-                        {% endif %}
                         {% csrf_token %}
                         <input type="number" step="0.01" name="bid" min="{{ auction.bid }}" required="" id="bid"
                                placeholder={{ auction.last_bid }}><input type="submit" value="Bid">
@@ -56,8 +52,8 @@
                 {% else %}
                     {% if auction.author != authuser and auction.last_bider == authuser %}
                 <label>You cannot bid on your own auction !</label>
-                        {% elif auction.author != authuser and auction.last_bider == authuser %}
-                    <label>You cannot bid as you are tha last user to do so !</label>
+                        {% elif auction.author == authuser and auction.last_bider != authuser %}
+                        <label><i><h6>You cannot bid as you are tha last user to do so !</h6></i></label>
                     {% endif %}
                     {% endif %}
             {% endif %}

@@ -1,3 +1,4 @@
+import decimal
 import math
 from django.shortcuts import render
 from django.views import View
@@ -60,19 +61,11 @@ def register(request):
 @method_decorator(login_required, name="dispatch")
 class Createbid(View):
     def get(self, request):
-        # global time_min
-        # s=datetime.now()
-        # print(s)
-        # mytime = datetime.strptime(s, "%Y-%m-%d %H:%M:%S")
-        # mytime += timedelta(hours=72)
-        # print(mytime.strftime("%Y-%m-%dT%H:%M:%S"))
-        # time_min=str(time_min.strftime())
-        # print(time_min+"eh?")
+
         global time_min
         time_min = datetime.now() + timedelta(hours=72)
         print(datetime.now())
         time_min=time_min.strftime('%Y-%m-%dT%H:%M')
-        #2017 - 06 - 01T08: 30
         print(time_min)
         return render(request, 'createbid.html',{'time':time_min})
 
@@ -87,7 +80,6 @@ class Createbid(View):
             bid_res = cd['bid_res']
             if bid_res < time_min:
                 bid_res =  time_min
-
             print("cd bid",bid_res)
             form = confBid()
             return render(request, 'wizardtest.html', {'form': form,
@@ -110,10 +102,10 @@ def savebid(request):
         b_title = request.POST.get('b_title', '')
         b_details = request.POST.get('b_details', '')
         b_bid = request.POST.get('b_bid', )
-        print(b_bid)
+
         b_res = request.POST.get('b_res', )
         bid_user = User.objects.get(username=request.user.username)
-
+        bid_user=str(bid_user)
         auction_save = Auction.objects.create(title=b_title, details=b_details, bid_res=b_res, timestamp=datetime.now(),
                            author=request.user, active=1,last_bid=b_bid, last_bider=bid_user)
         auction_save.save()
@@ -123,11 +115,14 @@ def savebid(request):
             bid=b_bid,
 
             auction=auction_save,
-            bid_by=bid_user
+            bid_by=User.objects.get(username=request.user.username)
         )
         print(b_bid)
         bids_save.save()
-        messages.add_message(request, messages.INFO, "New bid has been saved")
+        messages.add_message(request, messages.INFO, "New auction has been created!")
+
+        sendMailAuthor(request.user,auction_save)
+
         return HttpResponseRedirect(reverse("home"))
     else:
         return HttpResponseRedirect(reverse("home"))
@@ -136,15 +131,11 @@ def savebid(request):
 
 ## todo: add api
 def archive(request):
-
-    t=datetime.now()+timedelta(hours=72)
-    t.strftime("%Y-%m-%d %H:%M:%S")
-
     # if superuser
     if request.user.is_superuser:
         auction = Auction.objects.order_by('-timestamp')
         return render(request, "bidlist.html", {'auction': auction,
-                                            'authuser': request.user.username})
+                                            'authuser': request.user})
 
 
     # if normal user
@@ -152,7 +143,7 @@ def archive(request):
         auction = Auction.objects.filter(banned=False).order_by('-timestamp')
 
         return render(request, "bidlist.html",{'auction':auction,
-                                               'authuser': request.user.username})
+                                               'authuser': request.user})
 
     #if guest
     else:
@@ -202,21 +193,25 @@ def updatebid(request, offset):
 ## todo: add concurrency
 ## todo: add api
 def makebid(request, offset):
-    bids = Auction.objects.filter(id= offset)
-    if len(bids) > 0:
-        bid = bids[0]
-    else:
-        messages.add_message(request, messages.INFO, "Invalid bid id")
-        return HttpResponseRedirect(reverse("home"))
+    auction = Auction.objects.get(id=offset)
 
     if request.method == "POST":
         bidmade = request.POST["bid"].strip()
-        bid.bid = bidmade
-        bid.bid_by = request.user
-        bid.save()
-        messages.add_message(request, messages.INFO, "Bid made!")
-        sendMailAll('A new bid was made!',offset)
+        if float(bidmade) > auction.last_bid + decimal.Decimal('0.01') :
 
+            auction.last_bid = bidmade
+            auction.last_bider = request.user.username
+            auction.save()
+
+            bids_save = Bids.objects.create(
+                bid=bidmade,
+                auction=auction,
+                bid_by=User.objects.get(username=request.user.username)
+            )
+            messages.add_message(request, messages.INFO, "Bid made!")
+            sendMailAll('A new bid was made!', offset)
+    else:
+        messages.add_message(request, messages.INFO, "Your bid was less then the previews one!")
     return HttpResponseRedirect(reverse("home"))
 
 
@@ -247,7 +242,7 @@ def search(request):
 def bann_auction(request,id):
     if request.method=="GET":
         auction_to_bann = Auction.objects.get(pk=id)
-        auction_to_bann.banned=True
+        auction_to_bann.banned = True
         auction_to_bann.save()
         messages.add_message(request, messages.INFO, "Auction banned!")
     return HttpResponseRedirect(reverse("home"))
@@ -325,12 +320,21 @@ def sendMailAll(what_happened,auction):
     send_mail('subject', what_happened, 'noreply@parsifal.co',send_spam_to)
 
 
-def sendMailAuthor(user2,bidsave,bid):
-
-    user = User.objects.get(username=user2)
-    sent_TO = str(user.email)
+def sendMailAuthor(user,auction):
+    user2 = User.objects.get(username=user)
+    print(user2)
+    sent_TO = str(user2.email)
     print (sent_TO)
-    email_message= " Hello "+ str(user)+ '! You just created a bid with Title : "'+ str(bidsave.title)+\
-                   '" with Detail: "' + str(bidsave.details) + '" bid resoultion time: ' + str(bidsave.bid_res) + " and minimum bid of " + str(bid)
-    send_mail('subject', email_message, 'isAwesome@andi.domi',[user.email])
+    email_message= " Hello "+ str(user2)+ '! You just created an auction with Title : "'+ str(auction.title)+\
+                   '" with Detail: "' + str(auction.details) + '" bid resoultion time: ' + str(auction.bid_res) + " and minimum bid of " + str(auction.last_bid+""
+                    ' please, go here http://127.0.0.1:8000/showDetails/'+str(auction.id)+'  to have a look at your auction!')
+    send_mail('subject', email_message, 'isAwesome@andi.domi',[user2.email])
+
+def showBidDetails(request,offset):
+    if request.user.is_authenticated:
+        auction = Auction.objects.filter(id=offset)
+        return render(request, "bidlist.html", {'auction': auction,'authuser': request.user})
+    else:
+        messages.add_message(request, messages.INFO, "You are not logged in, please login to see the auction details")
+        return HttpResponseRedirect(reverse("/login/"))
 

@@ -16,7 +16,7 @@ class Auction(models.Model):
     timestamp = models.DateTimeField(null=True)
     active = models.IntegerField()
     banned = models.BooleanField(default=False)
-    last_bider = models.TextField(null=True,unique=True)
+    last_bider = models.TextField(null=True)
     last_bid = models.DecimalField(max_digits=10,decimal_places=2,null=True,default=0.01,validators=[MinValueValidator(0.01)])
 
 
