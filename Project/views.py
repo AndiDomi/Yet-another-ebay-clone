@@ -30,7 +30,10 @@ from django.contrib.auth.signals import user_logged_in
 # function that runs when we log in
 # in this case it just changes the language to the user prefered one
 def on_login_do(sender, user, request, **kwargs):
-    language= user.user_profile.language
+    if request.user.is_superuser:
+        language = 'en'
+    else:
+        language= user.user_profile.language
     translation.activate(language)
     request.session[translation.LANGUAGE_SESSION_KEY] = language
 # when user logs in funciton
@@ -93,16 +96,16 @@ class Createbid(View):
 
 
 
-## TODO: save all the users who did a bid
-## TODO: send an email to all the users who bided
-## TODO: Add concurrency
+
+
 def savebid(request):
     option = request.POST.get('option', '')
     if option == 'Yes':
         b_title = request.POST.get('b_title', '')
         b_details = request.POST.get('b_details', '')
         b_bid = request.POST.get('b_bid', )
-
+        if float(b_bid)<0.01:
+            b_bid=str(float(b_bid)+0.01)
         b_res = request.POST.get('b_res', )
         bid_user = User.objects.get(username=request.user.username)
         bid_user=str(bid_user)
@@ -113,7 +116,6 @@ def savebid(request):
 
         bids_save=Bids.objects.create(
             bid=b_bid,
-
             auction=auction_save,
             bid_by=User.objects.get(username=request.user.username)
         )
@@ -160,31 +162,31 @@ def editbid(request, offset):
         return HttpResponseRedirect('/login/')
     else:
         auction = get_object_or_404(Auction, id=offset)
-        bid = get_object_or_404(Bids,id=offset)
+        bid = get_object_or_404(Bids,auction=offset)
 
         return render(request, "editbid.html",
                 {'author': auction.author,
                 "title": auction.title,
-                "id": bid.id,
+                "id": auction.id,
                 "bid_details": auction.details,
                 "bid_res": auction.bid_res,
-                "bid_by": bid.bid_by
+                "bid_by": bid.bid_by,
+                "version" :auction.version
                     })
 
 
 ## todo: add concurrncy
 def updatebid(request, offset):
-    bids = Auction.objects.filter(id=offset)
-    if len(bids) > 0:
-        bid = bids[0]
-    else:
-        messages.add_message(request, messages.INFO, "Invalid bid id")
-        return HttpResponseRedirect(reverse("home"))
-
+    print(offset)
+    auction = Auction.objects.get(id=offset)
+    print(auction.id)
     if request.method=="POST":
         details = request.POST["details"]
-        bid.details = details
-        bid.save()
+        print(details)
+        auction.details = details
+        print(auction.version)
+        auction.version += auction.version
+        auction.save()
         messages.add_message(request, messages.INFO, "Bid updated")
 
     return HttpResponseRedirect(reverse("home"))
@@ -197,22 +199,36 @@ def makebid(request, offset):
 
     if request.method == "POST":
         bidmade = request.POST["bid"].strip()
-        if float(bidmade) > auction.last_bid + decimal.Decimal('0.01') :
+        request_version = request.POST["version"]
+        print(request_version)
+        if float(request_version) >= float(auction.version):
+            if float(bidmade) > auction.last_bid + decimal.Decimal('0.01') :
 
-            auction.last_bid = bidmade
-            auction.last_bider = request.user.username
-            auction.save()
+                auction.last_bid = bidmade
+                auction.last_bider = request.user.username
+                auction.version = auction.version + auction.version
+                auction.save()
 
-            bids_save = Bids.objects.create(
-                bid=bidmade,
-                auction=auction,
-                bid_by=User.objects.get(username=request.user.username)
-            )
-            messages.add_message(request, messages.INFO, "Bid made!")
-            sendMailAll('A new bid was made!', offset)
+                bids_save = Bids.objects.create(
+                    bid=bidmade,
+                    auction=auction,
+                    bid_by=User.objects.get(username=request.user.username)
+                )
+
+                bids_save.save()
+                messages.add_message(request, messages.INFO, "Bid made!")
+                sendMailAll('A new bid was made!', offset)
+                print ("we probably should return something here")
+                return HttpResponseRedirect(reverse("home"))
+
+            else:
+                messages.add_message(request, messages.INFO, "We are sorry but the bid you made is less than the previews one, please try again!")
+                return redirect("showDetails/" + str(auction.id))
+        else:
+            messages.add_message(request, messages.INFO, "We are sorry but the auction was updated while you tried to bid, please try again!")
+            return redirect(reverse("/showDetails/" + str(auction.id)+"/"))
     else:
-        messages.add_message(request, messages.INFO, "Your bid was less then the previews one!")
-    return HttpResponseRedirect(reverse("home"))
+         return HttpResponseRedirect(reverse("home"))
 
 
 
