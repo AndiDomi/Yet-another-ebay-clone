@@ -1,4 +1,5 @@
 import decimal
+from django.core import serializers
 import math
 from django.shortcuts import render
 from django.views import View
@@ -24,12 +25,14 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.utils import translation
 from django.core.mail import send_mail
+import json
 
 from django.contrib.auth.signals import user_logged_in
 
 # function that runs when we log in
 # in this case it just changes the language to the user prefered one
 def on_login_do(sender, user, request, **kwargs):
+    print('we are in login')
     if request.user.is_superuser:
         language = 'en'
     else:
@@ -43,6 +46,7 @@ user_logged_in.connect(on_login_do)
 # TODO: check if the bid is active in all the views that are called
 
 def register(request):
+    print('we are in register')
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
@@ -60,11 +64,11 @@ def register(request):
     return render(request, "register.html", {'form': form})
 
 
-## done
+
 @method_decorator(login_required, name="dispatch")
 class Createbid(View):
     def get(self, request):
-
+        print('we are in create bid get')
         global time_min
         time_min = datetime.now() + timedelta(hours=72)
         print(datetime.now())
@@ -74,6 +78,7 @@ class Createbid(View):
 
 
     def post(self, request):
+        print('we are in create bid post')
         form = CreateBid(request.POST)
         if form.is_valid():
             cd = form.cleaned_data
@@ -100,11 +105,12 @@ class Createbid(View):
 
 def savebid(request):
     option = request.POST.get('option', '')
+    print('we are in save bid')
     if option == 'Yes':
         b_title = request.POST.get('b_title', '')
         b_details = request.POST.get('b_details', '')
         b_bid = request.POST.get('b_bid', )
-        if float(b_bid)<0.01:
+        if float(b_bid) < 0.01:
             b_bid=str(float(b_bid)+0.01)
         b_res = request.POST.get('b_res', )
         bid_user = User.objects.get(username=request.user.username)
@@ -133,23 +139,28 @@ def savebid(request):
 
 ## todo: add api
 def archive(request):
+    print('we are in achieve')
     # if superuser
     if request.user.is_superuser:
         auction = Auction.objects.order_by('-timestamp')
+        print('superuser'+str(request.user))
         return render(request, "bidlist.html", {'auction': auction,
-                                            'authuser': request.user})
+                                            'authuser': str(request.user)})
 
 
     # if normal user
     elif request.user.is_authenticated():
         auction = Auction.objects.filter(banned=False).order_by('-timestamp')
-
+        print('user '+str(request.user))
+        print(auction)
         return render(request, "bidlist.html",{'auction':auction,
-                                               'authuser': request.user})
+                                               'authuser': str(request.user)})
 
     #if guest
     else:
         auction = Auction.objects.filter(banned=False).order_by('-timestamp')
+
+        print('guest'+str(request.user))
         return render(request, "bidlist.html", {'auction': auction,
                                                 'guest': 'Your are not loged in, please log in to bid!'})
 
@@ -158,12 +169,13 @@ def archive(request):
 
 ## TODO: add concurrency
 def editbid(request, offset):
+    print('we are in edit bid')
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     else:
         auction = get_object_or_404(Auction, id=offset)
         bid = get_object_or_404(Bids,auction=offset)
-
+        print(type(auction.last_bider))
         return render(request, "editbid.html",
                 {'author': auction.author,
                 "title": auction.title,
@@ -177,6 +189,7 @@ def editbid(request, offset):
 
 ## todo: add concurrncy
 def updatebid(request, offset):
+    print('we are in update')
     print(offset)
     auction = Auction.objects.get(id=offset)
     print(auction.id)
@@ -188,13 +201,14 @@ def updatebid(request, offset):
         auction.version += auction.version
         auction.save()
         messages.add_message(request, messages.INFO, "Bid updated")
-
     return HttpResponseRedirect(reverse("home"))
 
 
 ## todo: add concurrency
 ## todo: add api
 def makebid(request, offset):
+
+    print('we are in make bid')
     auction = Auction.objects.get(id=offset)
 
     if request.method == "POST":
@@ -202,7 +216,7 @@ def makebid(request, offset):
         request_version = request.POST["version"]
         print(request_version)
         if float(request_version) >= float(auction.version):
-            if float(bidmade) > auction.last_bid + decimal.Decimal('0.01') :
+            if float(bidmade) > auction.last_bid + decimal.Decimal('0.01'):
 
                 auction.last_bid = bidmade
                 auction.last_bider = request.user.username
@@ -223,7 +237,7 @@ def makebid(request, offset):
 
             else:
                 messages.add_message(request, messages.INFO, "We are sorry but the bid you made is less than the previews one, please try again!")
-                return redirect("showDetails/" + str(auction.id))
+                return redirect("/showDetails/" + str(auction.id))
         else:
             messages.add_message(request, messages.INFO, "We are sorry but the auction was updated while you tried to bid, please try again!")
             return redirect(reverse("/showDetails/" + str(auction.id)+"/"))
@@ -234,6 +248,8 @@ def makebid(request, offset):
 
 # done
 def search(request):
+    print('we are in search')
+
     if request.method == "GET":
         searchText=request.GET["id"]
 
@@ -256,6 +272,7 @@ def search(request):
 
 ## todo: Concurrency?
 def bann_auction(request,id):
+    print('we are in ban')
     if request.method=="GET":
         auction_to_bann = Auction.objects.get(pk=id)
         auction_to_bann.banned = True
@@ -266,6 +283,7 @@ def bann_auction(request,id):
 
 ## done
 def changelanguage(request,iduser):
+    print('we are in change language')
     try:
         user = User.objects.get(id=iduser)
         if request.GET['password']:
@@ -288,6 +306,7 @@ def editP(request):
 
 # function to select langauge and save it
 def editL(request):
+    print('we are in edit language')
     if request.POST['dropdown']:
         # get the language from the request
         language = request.POST['dropdown']
@@ -319,6 +338,7 @@ def editL(request):
 
 # to check if the bids are active
 def isBidActive(bid2):
+    print('we are in is bid active')
     for a in bid2:
         a2 = datetime.now()
         b2 = a.bid_res
@@ -347,10 +367,40 @@ def sendMailAuthor(user,auction):
     send_mail('subject', email_message, 'isAwesome@andi.domi',[user2.email])
 
 def showBidDetails(request,offset):
+    print('we are in show bid details')
     if request.user.is_authenticated:
         auction = Auction.objects.filter(id=offset)
-        return render(request, "bidlist.html", {'auction': auction,'authuser': request.user})
+        return render(request, "bidlist.html", {'auction': auction, 'authuser': request.user })
     else:
         messages.add_message(request, messages.INFO, "You are not logged in, please login to see the auction details")
         return HttpResponseRedirect(reverse("/login/"))
+
+def api_search(request):
+    print('we are in search')
+
+    if request.method == "GET":
+        searchText = request.GET["id"]
+
+        if request.user.is_superuser:
+            print("is superuser")
+            auction = Auction.objects.filter(title__contains=searchText)
+
+            auctions_ser = serializers.serialize('json', auction)
+            struct = json.loads(auctions_ser)
+            auctions_ser = json.dumps(struct)
+            return HttpResponse(auctions_ser, content_type='application/json')
+
+        elif request.user.is_authenticated():
+            auction = Auction.objects.filter(title__contains=searchText, banned=False)
+            auctions_ser = serializers.serialize('json', auction)
+            struct = json.loads(auctions_ser)
+            auctions_ser = json.dumps(struct)
+            return HttpResponse(auctions_ser, content_type='application/json')
+
+        else:
+            auction = Auction.objects.filter(title__contains=searchText, banned=False)
+            auctions_ser = serializers.serialize('json', auction)
+            struct = json.loads(auctions_ser)
+            auctions_ser = json.dumps(struct)
+            return HttpResponse(auctions_ser, content_type='application/json')
 

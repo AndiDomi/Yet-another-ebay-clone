@@ -5,7 +5,7 @@
     {% for auction in auction %}
 
         <h4> {{ auction.title }} </h4>
-
+        <button class="button-elem">EUR</button>
         {% ifequal auction.active 0 %}
             <p>{% trans "Auction is not active! No bid and modification can be done on this Auction!" %}</p>
             {% if request.user.is_superuser %}
@@ -25,38 +25,76 @@
                 <a href="/editbid/{{ auction.id }}/">{% trans "Edit Details" %}</a>
             {% endif %}
 
-            {% if request.user.is_superuser %}
+            {% if request.user.is_superuser and auction.banned == 0  %}
                 <a href="/banbid/{{ auction.id }}/">{% trans "Click here to Ban Auction!" %}</a>
+            {% endif %}
+            {%  if auction.banned == 1 %}
+                <label> Auction Banned! No modification can be done to this auction!</label>
             {% endif %}
             <p>{% trans "Auction created by" %}: <b> {{ auction.author }} </b></p>
             <p>{% trans "Auction created on" %}: <b> {{ auction.timestamp }}</b></p>
             <p>{% trans "Auction ends at" %}: <b>{{ auction.bid_res }}</b></p>
             <p>{% trans "Details" %}: <b>{{ auction.details }}</b></p>
-            {% trans "Current bid made by" %} {{ auction.last_bider }}: <b>{{ auction.last_bid }}</b>
+            {% trans "Current bid made by" %} {{ auction.last_bider }}: <div class="money_exhange">{{ auction.last_bid }}</div>
             <p>
                 {% if guest %}
                     {{ guest }}
                     </p>
 
                 {% endif %}
-
-
             {% if not guest %}
-                {% if auction.author != authuser and auction.last_bider != authuser %}
-                    <label>{{ auction.author }}</label>
+
+                {% if auction.author != authuser and auction.last_bider != authuser and auction.banned == 0 %}
+
+                    <button class="button-elem">Efsafsfsadfasdfsr</button>
+
+                    {%  if auction.last_bider == authuser %}
+                        <label>The logged in user is the one who did the last bid</label>
+                    {% endif %}
+
                     <form action="/makebid/{{ auction.id }}/" method="post">
                         {% csrf_token %}
-                        <input type="number" step="0.01" name="bid" min="{{ auction.bid }}" required="" id="bid"
-                               placeholder={{ auction.last_bid }}><input type="submit" value="Bid">
+                        <input type="number" step="0.01" name="bid" min="{{ auction.last_bid }}" required="" id="bid"
+                               placeholder={{ auction.last_bid }}>
+                        <input type="hidden" name="version" value="{{ auction.version }}">
+                        <input type="submit" value="Bid">
                     </form>
                 {% else %}
-                    {% if auction.author != authuser and auction.last_bider == authuser %}
+                    {% if auction.author == authuser and auction.last_bider == authuser %}
                 <label>You cannot bid on your own auction !</label>
-                        {% elif auction.author == authuser and auction.last_bider != authuser %}
-                        <label><i><h6>You cannot bid as you are tha last user to do so !</h6></i></label>
+                    {% elif auction.author != authuser and auction.last_bider == authuser %}
+                        <label><i><h6>You cannot make an offer in your own bid !</h6></i></label>
                     {% endif %}
                     {% endif %}
+
+
+
+
             {% endif %}
+<script>
+    var clickState=0;
+    var btn = document.querySelector('.button-elem');
+
+    btn.addEventListener('click', function(){
+
+    if (clickState == 0) {
+        // code snippet 1
+        this.textContent = 'EUR';
+               var doll = document.querySelector('.money_exhange');
+        console.log(doll);
+        doll.innerText = {{ auction.last_bid }};
+        clickState = 1;
+    } else {
+        // code snippet 2
+        this.textContent = 'USD';
+        clickState = 0;
+        var doll = document.querySelector('.money_exhange');
+        console.log(doll);
+        doll.innerText = {{ auction.last_bid }}*1.3;
+
+    }
+});
+</script>
             </p>
             <br>
             <br>

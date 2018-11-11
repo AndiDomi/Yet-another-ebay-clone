@@ -6,8 +6,10 @@
 
 <p><b>{% trans "Edit Bid:" %}. {{ title }}</b></p>
     <form action="/updatebid/{{ id }}/" method="post">
+    {{ id }}
         {%  csrf_token %}
        <p>{% trans " Details:"%}  <textarea name="details" cols="50" rows="20">{{ bid_details }}</textarea></p>
+        <input type="number" name="version" hidden value="{{ version }}">
         <input type="submit" value="Change">
     </form>
 

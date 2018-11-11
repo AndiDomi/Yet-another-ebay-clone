@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^savebid/$', savebid),
     url(r'^editbid/(\d+)/$', editbid),
     url(r'^search/', search),
+    url(r'^apisearch/', api_search),
     url(r'^updatebid/(\d+)/$', updatebid),
     url(r'^makebid/(\d+)/$', makebid),
     url(r'^banbid/(\d+)/$', bann_auction),

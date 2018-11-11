@@ -18,7 +18,7 @@ class Auction(models.Model):
     banned = models.BooleanField(default=False)
     last_bider = models.TextField(null=True)
     last_bid = models.DecimalField(max_digits=10,decimal_places=2,null=True,default=0.01,validators=[MinValueValidator(0.01)])
-
+    version = models.DecimalField(decimal_places=1, default=0.1, max_digits=10)
 
     def __unicode__(self):
         return self.title
@@ -28,7 +28,7 @@ class Auction(models.Model):
 
 class Bids(models.Model):
     id = models.AutoField(primary_key=True,unique=True)
-    bid = models.DecimalField(max_digits=10,decimal_places=2,null=True,default=0.01,validators=[MinValueValidator(0.01)])
+    bid = models.DecimalField(max_digits=100,decimal_places=2,null=True,default=0.01,validators=[MinValueValidator(0.01)])
     auction = models.ForeignKey(Auction, on_delete=models.CASCADE)
     bid_by = models.ForeignKey(User, null=True, blank=True)
 
