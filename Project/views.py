@@ -1,7 +1,10 @@
 import decimal
+
+import requests
 from django.core import serializers
 import math
 from django.shortcuts import render
+from django.utils.crypto import get_random_string
 from django.views import View
 # Create your views here.
 from django.contrib.auth import login, authenticate
@@ -87,7 +90,7 @@ class Createbid(View):
             bid_bid = cd['bid']
             bid_res = cd['bid_res']
             if bid_res < time_min:
-                bid_res =  time_min
+                bid_res = time_min
             print("cd bid",bid_res)
             form = confBid()
             return render(request, 'wizardtest.html', {'form': form,
@@ -140,31 +143,37 @@ def savebid(request):
 ## todo: add api
 def archive(request):
     print('we are in achieve')
+    dollar = getDollarRate()
     # if superuser
     if request.user.is_superuser:
         auction = Auction.objects.order_by('-timestamp')
+        print(auction.id)
         print('superuser'+str(request.user))
         return render(request, "bidlist.html", {'auction': auction,
-                                            'authuser': str(request.user)})
+                                            'authuser': str(request.user),'dollar':dollar})
 
 
     # if normal user
     elif request.user.is_authenticated():
         auction = Auction.objects.filter(banned=False).order_by('-timestamp')
         print('user '+str(request.user))
-        print(auction)
         return render(request, "bidlist.html",{'auction':auction,
-                                               'authuser': str(request.user)})
+                                               'authuser': str(request.user),'dollar':dollar})
 
     #if guest
     else:
         auction = Auction.objects.filter(banned=False).order_by('-timestamp')
-
         print('guest'+str(request.user))
-        return render(request, "bidlist.html", {'auction': auction,
+        return render(request, "bidlist.html", {'auction': auction,'dollar':dollar,
                                                 'guest': 'Your are not loged in, please log in to bid!'})
 
 
+def getDollarRate():
+    r = requests.get(
+        'http://data.fixer.io/api/latest?access_key=d46d2d7ac1dfe0569dd3989e34356db8&symbols=USD&format=1', )
+    dollar = json.loads(r.text)
+    dollar = dollar["rates"]["USD"]
+    return dollar
 
 
 ## TODO: add concurrency
@@ -232,9 +241,7 @@ def makebid(request, offset):
                 bids_save.save()
                 messages.add_message(request, messages.INFO, "Bid made!")
                 sendMailAll('A new bid was made!', offset)
-                print ("we probably should return something here")
                 return HttpResponseRedirect(reverse("home"))
-
             else:
                 messages.add_message(request, messages.INFO, "We are sorry but the bid you made is less than the previews one, please try again!")
                 return redirect("/showDetails/" + str(auction.id))
@@ -249,7 +256,7 @@ def makebid(request, offset):
 # done
 def search(request):
     print('we are in search')
-
+    dollar = getDollarRate()
     if request.method == "GET":
         searchText=request.GET["id"]
 
@@ -258,17 +265,17 @@ def search(request):
             auction = Auction.objects.filter(title__contains=searchText)
 
             return render(request, "bidlist.html", {'auction': auction,
-                                                    'authuser': request.user})
+                                                    'authuser': request.user,'dollar':dollar})
 
         elif request.user.is_authenticated():
             auction = Auction.objects.filter(title__contains=searchText,banned=False)
             return render(request, "bidlist.html", {'auction': auction,
-                                                    'authuser': request.user})
+                                                    'authuser': request.user,'dollar':dollar})
 
         else:
             auction = Auction.objects.filter(title__contains=searchText,banned=False)
             return render(request, "bidlist.html",{'auction':auction,
-                                               'guest':'Your are not loged in, please log in to bid!'})
+                                               'guest':'Your are not loged in, please log in to bid!','dollar':dollar})
 
 ## todo: Concurrency?
 def bann_auction(request,id):
@@ -368,9 +375,10 @@ def sendMailAuthor(user,auction):
 
 def showBidDetails(request,offset):
     print('we are in show bid details')
+    dollar= getDollarRate()
     if request.user.is_authenticated:
         auction = Auction.objects.filter(id=offset)
-        return render(request, "bidlist.html", {'auction': auction, 'authuser': request.user })
+        return render(request, "bidlist.html", {'auction': auction, 'authuser': request.user,'dollar':dollar})
     else:
         messages.add_message(request, messages.INFO, "You are not logged in, please login to see the auction details")
         return HttpResponseRedirect(reverse("/login/"))
@@ -403,4 +411,50 @@ def api_search(request):
             struct = json.loads(auctions_ser)
             auctions_ser = json.dumps(struct)
             return HttpResponse(auctions_ser, content_type='application/json')
+
+
+def getDollar(request):
+    if request.method == "GET":
+        searchText = request.GET["id"]
+
+
+
+def createRandomStuff(request):
+    if request.method == "GET":
+        numbers_of_random = request.GET["id"]
+        print(numbers_of_random)
+        i=0
+        while i <= int(numbers_of_random):
+            print(i)
+            new_user = User.objects.create(
+                username="user00"+str(i),
+                email="user"+str(i)+"@an.di",
+                # passpass is the password easy!
+                password = "pbkdf2_sha256$36000$CIOL9xBIIT6e$O5P5ha6oNZlHJku7G1JN0hKVwt0dOK1zWSTTEQ4OVqg="
+            )
+            print(new_user)
+            userprofile = User_profile.objects.create(user=new_user, language='en')
+            userprofile.save()
+
+
+            b_title = 'title nr'+str(i)
+            b_details = 'Here there are some details and with a number of nr'+str(i)
+            b_bid = 333
+            b_res = datetime.now() + timedelta(hours=72)
+            bid_user=str("user00"+str(i))
+            auction_save = Auction.objects.create(title=b_title, details=b_details, bid_res=b_res, timestamp=datetime.now(),
+                           author=new_user, active=1,last_bid=b_bid, last_bider=new_user)
+            auction_save.save()
+            i = i + 1
+
+            bids_save=Bids.objects.create(
+                bid=b_bid,
+                auction=auction_save,
+                bid_by=new_user
+            )
+
+            bids_save.save()
+
+        return HttpResponse({"Code Generated:{ 'User Cloned' :{ 'Password Salted' :{ 'Emails: Retreived }  } }"
+                             }, content_type='application/json')
 

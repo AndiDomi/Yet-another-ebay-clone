@@ -22,6 +22,7 @@ admin.autodiscover()
 
 
 
+
 urlpatterns = [
 
     url(r'^admin/', admin.site.urls),
@@ -33,7 +34,7 @@ urlpatterns = [
     url(r'^savebid/$', savebid),
     url(r'^editbid/(\d+)/$', editbid),
     url(r'^search/', search),
-    url(r'^apisearch/', api_search),
+    url(r'^apisearch/$', api_search),
     url(r'^updatebid/(\d+)/$', updatebid),
     url(r'^makebid/(\d+)/$', makebid),
     url(r'^banbid/(\d+)/$', bann_auction),
@@ -41,6 +42,7 @@ urlpatterns = [
     url(r'^editP/$', editP,name='editprofile'),
     url(r'^editL/$', editL,name='editL'),
     url(r'^showDetails/(\d+)/$', showBidDetails,name='showDetails'),
-
+    url(r'^getDollar/$', getDollar),
+    url(r'^randomize/$', createRandomStuff),
 ]
 

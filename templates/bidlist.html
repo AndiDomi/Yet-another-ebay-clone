@@ -1,11 +1,10 @@
 {% extends 'index.html' %}
 {% load i18n %}
 {% block content %}
-
+{% load custom_Tag %}
     {% for auction in auction %}
 
         <h4> {{ auction.title }} </h4>
-        <button class="button-elem">EUR</button>
         {% ifequal auction.active 0 %}
             <p>{% trans "Auction is not active! No bid and modification can be done on this Auction!" %}</p>
             {% if request.user.is_superuser %}
@@ -21,9 +20,13 @@
             <br>
 
         {% else %}
-            {% if auction.author == authuser %}
+            You are the authorised one
+            {{ auction.author }}
+            {{ authuser }}
+            {% ifequal auction.author|slugify  authuser|slugify %}
+
                 <a href="/editbid/{{ auction.id }}/">{% trans "Edit Details" %}</a>
-            {% endif %}
+            {% endifequal %}
 
             {% if request.user.is_superuser and auction.banned == 0  %}
                 <a href="/banbid/{{ auction.id }}/">{% trans "Click here to Ban Auction!" %}</a>
@@ -35,7 +38,9 @@
             <p>{% trans "Auction created on" %}: <b> {{ auction.timestamp }}</b></p>
             <p>{% trans "Auction ends at" %}: <b>{{ auction.bid_res }}</b></p>
             <p>{% trans "Details" %}: <b>{{ auction.details }}</b></p>
-            {% trans "Current bid made by" %} {{ auction.last_bider }}: <div class="money_exhange">{{ auction.last_bid }}</div>
+            {% trans "Current bid made by" %} {{ auction.last_bider }}: {{ auction.last_bid }} {{ "€" }}
+            <p>
+            {% trans "Current bid converted to the latest exchange rate" %}: {{ auction.last_bid|multiply:dollar }} {{ "$" }}
             <p>
                 {% if guest %}
                     {{ guest }}
@@ -45,8 +50,6 @@
             {% if not guest %}
 
                 {% if auction.author != authuser and auction.last_bider != authuser and auction.banned == 0 %}
-
-                    <button class="button-elem">Efsafsfsadfasdfsr</button>
 
                     {%  if auction.last_bider == authuser %}
                         <label>The logged in user is the one who did the last bid</label>
@@ -60,9 +63,9 @@
                         <input type="submit" value="Bid">
                     </form>
                 {% else %}
-                    {% if auction.author == authuser and auction.last_bider == authuser %}
+                    {% if auction.author|slugify == authuser|slugify and auction.last_bider|slugify == authuser|slugify %}
                 <label>You cannot bid on your own auction !</label>
-                    {% elif auction.author != authuser and auction.last_bider == authuser %}
+                    {% elif auction.author|slugify != authuser|slugify and auction.last_bider|slugify == authuser|slugify %}
                         <label><i><h6>You cannot make an offer in your own bid !</h6></i></label>
                     {% endif %}
                     {% endif %}
@@ -71,30 +74,7 @@
 
 
             {% endif %}
-<script>
-    var clickState=0;
-    var btn = document.querySelector('.button-elem');
 
-    btn.addEventListener('click', function(){
-
-    if (clickState == 0) {
-        // code snippet 1
-        this.textContent = 'EUR';
-               var doll = document.querySelector('.money_exhange');
-        console.log(doll);
-        doll.innerText = {{ auction.last_bid }};
-        clickState = 1;
-    } else {
-        // code snippet 2
-        this.textContent = 'USD';
-        clickState = 0;
-        var doll = document.querySelector('.money_exhange');
-        console.log(doll);
-        doll.innerText = {{ auction.last_bid }}*1.3;
-
-    }
-});
-</script>
             </p>
             <br>
             <br>
@@ -106,3 +86,4 @@
     {% endfor %}
 
 {% endblock %}
+

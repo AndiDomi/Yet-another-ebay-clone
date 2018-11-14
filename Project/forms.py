@@ -27,9 +27,6 @@ class CreateBid(forms.Form):
     bid_res = forms.CharField()
 
 
-
-
-
 class confBid(forms.Form):
     CHOICES = [(x, x) for x in ("Yes", "No")]
     option = forms.ChoiceField(choices=CHOICES)
