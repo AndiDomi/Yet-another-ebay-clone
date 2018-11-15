@@ -42,7 +42,6 @@ urlpatterns = [
     url(r'^editP/$', editP,name='editprofile'),
     url(r'^editL/$', editL,name='editL'),
     url(r'^showDetails/(\d+)/$', showBidDetails,name='showDetails'),
-    url(r'^getDollar/$', getDollar),
     url(r'^randomize/$', createRandomStuff),
 ]
 
