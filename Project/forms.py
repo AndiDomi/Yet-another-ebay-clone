@@ -30,7 +30,7 @@ class CreateBid(forms.Form):
 class confBid(forms.Form):
     CHOICES = [(x, x) for x in ("Yes", "No")]
     option = forms.ChoiceField(choices=CHOICES)
-    #b_title = forms.CharField(widget=forms.HiddenInput())
+
 
 
 

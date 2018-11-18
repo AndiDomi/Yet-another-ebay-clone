@@ -16,7 +16,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib import auth
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
@@ -31,17 +31,19 @@ from django.utils import translation
 from django.core.mail import send_mail
 import json
 
+
 from django.contrib.auth.signals import user_logged_in
 
 
 # function that runs when we log in
 # in this case it just changes the language to the user prefered one
 def on_login_do(sender, user, request, **kwargs):
-    print('we are in login')
-    if request.user.is_superuser:
-        language = 'en'
-    else:
+    print('user'+ str(user))
+    print(request)
+    try:
         language = user.user_profile.language
+    except:
+        language = 'en'
     translation.activate(language)
     request.session[translation.LANGUAGE_SESSION_KEY] = language
 
@@ -57,6 +59,7 @@ def register(request):
     if request.method == 'POST':
         form = SignUpForm(request.POST)
         if form.is_valid():
+            print(form)
             new_user = form.save()
             userprofile = User_profile.objects.create(user=new_user, language='en')
             userprofile.save()
@@ -72,67 +75,87 @@ def register(request):
 
 
 @method_decorator(login_required, name="dispatch")
-class Createbid(View):
+class add_auction(View):
     def get(self, request):
         print('we are in create bid get')
         global time_min
         time_min = datetime.now() + timedelta(hours=72)
-        print(datetime.now())
+
         time_min = time_min.strftime('%Y-%m-%dT%H:%M')
         print(time_min)
         return render(request, 'createbid.html', {'time': time_min})
 
     def post(self, request):
-        print('we are in create bid post')
         form = CreateBid(request.POST)
-        if form.is_valid():
-            cd = form.cleaned_data
-            bid_t = cd['title']
-            bid_details = cd['details']
-            bid_bid = cd['bid']
-            bid_res = cd['bid_res']
-            if bid_res < time_min:
-                bid_res = time_min
-            print("cd bid", bid_res)
-            form = confBid()
-            return render(request, 'wizardtest.html', {'form': form,
-                                                       "b_title": bid_t,
-                                                       "b_details": bid_details,
-                                                       "b_bid": bid_bid,
-                                                       "b_res": bid_res})
-        else:
-            messages.add_message(request, messages.ERROR, )
-            return render(request, 'createbid.html', {'form': form, })
+        try:
+            if form.is_valid():
+                cd = form.cleaned_data
+                bid_t = cd['title']
+                if bid_t == "":
+                    messages.add_message(request, messages.INFO, "Title is empty, try again")
+                    return render(request, 'createbid.html', {'form': form})
+                bid_details = cd['details']
+                bid_bid = cd['bid']
+                if bid_bid == "":
+                    bid_bid = 0.01
+                bid_res = cd['bid_res']
+                if bid_bid == "":
+                    bid_res = time_min
+                if bid_res < time_min:
+                    bid_res = time_min
+                form = confBid()
+                return render(request, 'wizardtest.html', {'form': form,
+                                                           "b_title": bid_t,
+                                                           "b_details": bid_details,
+                                                           "b_bid": bid_bid,
+                                                           "b_res": bid_res})
+            else:
+                messages.add_message(request, messages.INFO, "well..well..well..something went wrong...")
+                return render(request, 'createbid.html', {'form': form })
+        except Exception as e:
+            messages.add_message(request, messages.INFO, e)
+            return render(request, 'createbid.html', {'form': form})
 
 
-def savebid(request):
-    option = request.POST.get('option', '')
-    print('we are in save bid')
+def save_acution(request):
+    option = request.POST.get('option')
     if option == 'Yes':
-        b_title = request.POST.get('b_title', '')
-        b_details = request.POST.get('b_details', '')
-        b_bid = request.POST.get('b_bid', )
-        if float(b_bid) < 0.01:
-            b_bid = str(float(b_bid) + 0.01)
-        b_res = request.POST.get('b_res', )
-        bid_user = User.objects.get(username=request.user.username)
-        bid_user = str(bid_user)
-        auction_save = Auction.objects.create(title=b_title, details=b_details, bid_res=b_res, timestamp=datetime.now(),
-                                              author=request.user, active=1, last_bid=b_bid, last_bider=bid_user)
-        auction_save.save()
+        try:
+            b_title = request.POST.get('b_title')
+            if b_title=="":
+                raise NameError('Title is empty!')
+            b_details = request.POST.get('b_details')
+            b_bid = request.POST.get('b_bid')
+            if b_bid=="":
+                raise NameError('You didnt put a starting bid!')
+            if float(b_bid) < 0.01:
+                b_bid = str(float(b_bid) + 0.01)
+            b_res = request.POST.get('b_res')
+            if b_res==""  :
+                raise NameError('Resolution time is empty, please try again!')
+            try:
+                datetime.strptime(b_res, '%Y-%m-%dT%H:%M')
+            except ValueError:
+                raise ValueError("Incorrect data format, should be Y-m-dT%H:M")
+            bid_user = User.objects.get(username=request.user.username)
+            bid_user = str(bid_user)
+            auction_save = Auction.objects.create(title=b_title, details=b_details, bid_res=b_res, timestamp=datetime.now(),
+                                                  author=request.user, active=1, last_bid=b_bid, last_bider=bid_user)
+            auction_save.save()
 
-        bids_save = Bids.objects.create(
-            bid=b_bid,
-            auction=auction_save,
-            bid_by=User.objects.get(username=request.user.username)
-        )
-        print(b_bid)
-        bids_save.save()
-        messages.add_message(request, messages.INFO, "New auction has been created!")
-
-        sendMailAuthor(request.user, auction_save)
-
-        return HttpResponseRedirect(reverse("home"))
+            bids_save = Bids.objects.create(
+                bid=b_bid,
+                auction=auction_save,
+                bid_by=User.objects.get(username=request.user.username)
+            )
+            print(b_bid)
+            bids_save.save()
+            messages.add_message(request, messages.INFO, "New auction has been created!")
+            sendMailAuthor(request.user, auction_save)
+            return HttpResponseRedirect(reverse("home"))
+        except Exception as e:
+            messages.add_message(request, messages.INFO, e)
+            return HttpResponseRedirect(reverse("home"))
     else:
         return HttpResponseRedirect(reverse("home"))
 
@@ -210,38 +233,57 @@ def updatebid(request, offset):
     return HttpResponseRedirect(reverse("home"))
 
 
-## todo: add concurrency
-## todo: add api
-def makebid(request, offset):
-
-    auction = Auction.objects.get(id=offset)
-    if request.method == "POST":
-        bidmade = request.POST["bid"].strip()
-        request_version = request.POST["version"]
-        if float(request_version) >= float(auction.version):
-            if float(bidmade) > auction.last_bid + decimal.Decimal('0.01'):
-                auction.last_bid = bidmade
-                auction.last_bider = request.user.username
-                auction.version = auction.version + auction.version
-                auction.save()
-                bids_save = Bids.objects.create(
-                    bid=bidmade,
-                    auction=auction,
-                    bid_by=User.objects.get(username=request.user.username)
-                )
-                bids_save.save()
-                messages.add_message(request, messages.INFO, "Bid made!")
-                sendMailAll('A new bid was made!', offset)
-                return HttpResponseRedirect(reverse("home"))
+def bid(request, offset):
+    try:
+        if request.user.is_authenticated():
+            if request.method == "POST":
+                auctionID = offset
+                if auctionID == "":
+                    raise NameError('Auction ID is empty, please try again!')
+                auction = Auction.objects.get(id=auctionID)
+                if not auction:
+                    raise NameError('Auction ID doesnt exist!')
+                bidmade = request.POST["bid"].strip()
+                if bidmade == "":
+                    raise NameError('You didnt put a bid number, please try again!')
+                request_version = request.POST["version"]
+                if float(request_version) >= float(auction.version):
+                    if float(bidmade) >= auction.last_bid + decimal.Decimal('0.01'):
+                        print(auction.last_bid + decimal.Decimal('0.01'))
+                        auction.last_bid = bidmade
+                        auction.last_bider = request.user.username
+                        auction.version = auction.version + auction.version
+                        auction.save()
+                        bids_save = Bids.objects.create(
+                            bid=bidmade,
+                            auction=auction,
+                            bid_by=User.objects.get(username=request.user.username)
+                        )
+                        bids_save.save()
+                        # sendMailAll('A new bid was made!', offset)
+                        messages.add_message(request, messages.INFO, "Bid made!")
+                        return HttpResponseRedirect(reverse("home"))
+                    else:
+                        print(bidmade)
+                        print(auction.last_bid + decimal.Decimal('0.01'))
+                        messages.add_message(request, messages.INFO,
+                                             "We are sorry but the bid you made is less than the previews one, please try again!")
+                        return redirect("/showDetails/" + str(auction.id) + '/')
+                else:
+                    messages.add_message(request, messages.INFO,
+                                         "We are sorry but the auction was updated while you tried to bid, please try again!")
+                    return redirect("/showDetails/" + str(auction.id) + "/")
             else:
-                messages.add_message(request, messages.INFO,
-                                     "We are sorry but the bid you made is less than the previews one, please try again!")
-                return redirect("/showDetails/" + str(auction.id)+'/')
+                raise NameError("We are sorry but this is not an API-GET request but a POST one")
         else:
-            messages.add_message(request, messages.INFO,
-                                 "We are sorry but the auction was updated while you tried to bid, please try again!")
-            return redirect("/showDetails/" + str(auction.id) + "/")
-    else:
+            raise NameError("We are sorry but we do not allow bids if you are not authenticated!")
+
+    except Exception as e:
+        message_on_error = {
+            "Error!": str(e)}  # dict
+        message_on_error = str(message_on_error)
+        message_on_error = message_on_error.replace("\'", "\"")
+        messages.add_message(request, messages.INFO,message_on_error)
         return HttpResponseRedirect(reverse("home"))
 
 
@@ -249,26 +291,41 @@ def makebid(request, offset):
 # search is done only by title to keep things a bit simplier
 def search(request):
     print('we are in search')
+    print(request.GET)
     dollar = exhange_rate()
     if request.method == "GET":
         searchText = request.GET["id"]
+        try:
+            api_or_not = request.GET["api"]
+        except:
+            api_or_not = 'NO'
 
         if request.user.is_superuser:
-            print("is superuser")
             auction = Auction.objects.filter(title__contains=searchText)
-
-            return render(request, "bidlist.html", {'auction': auction,
-                                                    'authuser': request.user,'dollar':dollar})
+            data={
+                'auction': auction,
+                'authuser': request.user,
+                'dollar': dollar
+            }
+            return return_api_search(api_or_not,request,"bidlist.html",data)
 
         elif request.user.is_authenticated():
             auction = Auction.objects.filter(title__contains=searchText, banned=False)
-            return render(request, "bidlist.html", {'auction': auction,
-                                                    'authuser': request.user,'dollar':dollar})
+            data={
+                'auction': auction,
+                'authuser': request.user,
+                'dollar': dollar
+            }
+            return return_api_search(api_or_not,request,"bidlist.html",data)
 
         else:
             auction = Auction.objects.filter(title__contains=searchText, banned=False)
-            return render(request, "bidlist.html", {'auction': auction,
-                                                    'guest': 'Your are not loged in, please log in to bid!','dollar':dollar})
+            data={
+                'auction': auction,
+                'authuser': request.user,
+                'dollar': dollar
+            }
+            return return_api_search(api_or_not,request, "bidlist.html", data)
 
 
 ## todo: Concurrency?
@@ -376,11 +433,6 @@ def sendMailAuthor(user, auction):
 
 def showBidDetails(request, offset):
     dollar = exhange_rate()
-    print('we are in show bid details')
-    print('lets see the request first')
-    print(request)
-    print('but also lets see the offset')
-    print(offset)
     if request.user.is_authenticated:
         auction = Auction.objects.filter(id=offset)
         return render(request, "bidlist.html", {'auction': auction, 'authuser': request.user,'dollar':dollar})
@@ -390,32 +442,30 @@ def showBidDetails(request, offset):
 
 # in here we search for an auction through api
 # because i dont really have time i copied the entire
-def api_search(request):
-    print('we are in search')
-    if request.method == "GET":
-        searchText = request.GET["id"]
-        if request.user.is_superuser:
-            print("is superuser")
-            auction = Auction.objects.filter(title__contains=searchText)
-
-            auctions_ser = serializers.serialize('json', auction)
-            struct = json.loads(auctions_ser)
-            auctions_ser = json.dumps(struct)
-            return HttpResponse(auctions_ser, content_type='application/json')
-
-        elif request.user.is_authenticated():
-            auction = Auction.objects.filter(title__contains=searchText, banned=False)
-            auctions_ser = serializers.serialize('json', auction)
-            struct = json.loads(auctions_ser)
-            auctions_ser = json.dumps(struct)
-            return HttpResponse(auctions_ser, content_type='application/json')
-
-        else:
-            auction = Auction.objects.filter(title__contains=searchText, banned=False)
-            auctions_ser = serializers.serialize('json', auction)
-            struct = json.loads(auctions_ser)
-            auctions_ser = json.dumps(struct)
-            return HttpResponse(auctions_ser, content_type='application/json')
+# def api_search(request):
+#     print('we are in search')
+#     if request.method == "GET":
+#         searchText = request.GET["id"]
+#         if request.user.is_superuser:
+#             auction = Auction.objects.filter(title__contains=searchText)
+#             auctions_ser = serializers.serialize('json', auction)
+#             struct = json.loads(auctions_ser)
+#             auctions_ser = json.dumps(struct)
+#             return HttpResponse(auctions_ser, content_type='application/json')
+#
+#         elif request.user.is_authenticated():
+#             auction = Auction.objects.filter(title__contains=searchText, banned=False)
+#             auctions_ser = serializers.serialize('json', auction)
+#             struct = json.loads(auctions_ser)
+#             auctions_ser = json.dumps(struct)
+#             return HttpResponse(auctions_ser, content_type='application/json')
+#
+#         else:
+#             auction = Auction.objects.filter(title__contains=searchText, banned=False)
+#             auctions_ser = serializers.serialize('json', auction)
+#             struct = json.loads(auctions_ser)
+#             auctions_ser = json.dumps(struct)
+#             return HttpResponse(auctions_ser, content_type='application/json')
 
 
 
@@ -460,6 +510,159 @@ def createRandomStuff(request):
                 bid_by=new_user
             )
             bids_save.save()
+        return HttpResponseRedirect(reverse("home"))
 
-        return HttpResponse({"Code Generated:{ 'User Cloned' :{ 'Password Salted' :{ 'Cookies backed' }  } }"
-                             }, content_type='application/json')
+
+
+def return_api_search(is_api,request,url,data):
+    if is_api=='NO':
+        return render(request, url, data)
+    else:
+
+        auction = Auction.objects.filter(title__contains=9, banned=False)
+        auctions_ser = serializers.serialize('json', data["auction"])
+        struct = json.loads(auctions_ser)
+        auctions_ser = json.dumps(struct)
+        return HttpResponse(auctions_ser, content_type='application/json')
+
+def return_api_bid(is_api,request,url,data):
+    if is_api=='NO':
+        return render(request, url, data)
+    else:
+
+        auction = Auction.objects.filter(title__contains=9, banned=False)
+        auctions_ser = serializers.serialize('json', data["auction"])
+        struct = json.loads(auctions_ser)
+        auctions_ser = json.dumps(struct)
+        return HttpResponse(auctions_ser, content_type='application/json')
+
+
+def create_auction_api(request):
+    option = request.GET["option"]
+    if option == 'Yes':
+        try:
+            b_title = request.GET["b_title"]
+            if b_title=="":
+                raise NameError('Title is empty!')
+                print('Title is empty!')
+            b_details = request.GET['b_details']
+            b_bid = request.GET['b_bid']
+            if b_bid=="":
+                raise NameError('You didnt put a starting bid!')
+                print('You didnt put a starting bid!')
+            if float(b_bid) < 0.01:
+                b_bid = str(float(b_bid) + 0.01)
+            b_res = request.GET['b_res']
+            if b_res == "":
+                raise NameError('Resolution time is empty, please try again!')
+                print('Resolution time is empty, please try again!')
+            try:
+                datetime.strptime(b_res, '%Y-%m-%dT%H:%M')
+                print()
+            except ValueError:
+                raise ValueError("Incorrect data format, should be Y-m-dT%H:M")
+            bid_user = User.objects.get(username=request.user.username)
+            bid_user = str(bid_user)
+            auction_save = Auction.objects.create(title=b_title, details=b_details, bid_res=b_res, timestamp=datetime.now(),
+                                                  author=request.user, active=1, last_bid=b_bid, last_bider=bid_user)
+            auction_save.save()
+
+            bids_save = Bids.objects.create(
+                bid=b_bid,
+                auction=auction_save,
+                bid_by=User.objects.get(username=request.user.username)
+            )
+            bids_save.save()
+
+
+            messages.add_message(request, messages.INFO, "New auction has been created!")
+            # sendMailAuthor(request.user, auction_save)
+
+            auction_2 = Auction.objects.filter(id=auction_save.id)
+            auctions_ser = serializers.serialize('json', auction_2)
+            struct = json.loads(auctions_ser)
+            auctions_ser = json.dumps(struct)
+            return HttpResponse(auctions_ser, content_type='application/json')
+
+        except Exception as e:
+            message_on_error = {
+                "Error!": str(e)}  # dict
+            message_on_error = str(message_on_error)
+            message_on_error = message_on_error.replace("\'", "\"")
+            return HttpResponse(message_on_error, content_type='application/json')
+    else:
+        message_on_error = {"Error!": "We are sorry but you should specify YES when making a API call as a mean to accept our condictions"}  # dict
+        message_on_error = str(message_on_error)
+        message_on_error=message_on_error.replace("\'", "\"")
+        return HttpResponse(message_on_error, content_type='application/json')
+
+
+# todo: if user is authenticated or not
+# todo: send mails to all the people who bided in here
+def bid_api(request):
+    try:
+        if request.user.is_authenticated():
+            if request.method == "GET":
+                auctionID=request.GET["aid"]
+                if auctionID=="":
+                    raise NameError('Auction ID is empty, please try again!')
+                auction = Auction.objects.get(id=auctionID)
+                if not auction:
+                    raise NameError('Auction ID doesnt exist!')
+                bidmade = request.GET["bid"].strip()
+                if bidmade=="":
+                    raise NameError('You didnt put a bid number, please try again!')
+
+                # todo: fix request version in here
+                request_version = request.GET["version"]
+                if request_version:
+                    request_version=auction.version
+                if float(request_version) >= float(auction.version):
+                    if float(bidmade) > auction.last_bid + decimal.Decimal('0.01'):
+                        auction.last_bid = bidmade
+                        auction.last_bider = request.user.username
+                        auction.version = auction.version + auction.version
+                        auction.save()
+                        bids_save = Bids.objects.create(
+                            bid=bidmade,
+                            auction=auction,
+                            bid_by=User.objects.get(username=request.user.username)
+                        )
+                        bids_save.save()
+
+                        bid=Bids.objects.filter(id=bids_save.id)
+                        auctions_ser = serializers.serialize('json', bid)
+                        struct = json.loads(auctions_ser)
+                        auctions_ser = json.dumps(struct)
+                        return HttpResponse(auctions_ser, content_type='application/json')
+                    else:
+                        message_on_error = {
+                            "Error!": "We are sorry but the bid you made is less than the previews one, please try again!"}  # dict
+                        message_on_error = str(message_on_error)
+                        message_on_error = message_on_error.replace("\'", "\"")
+                        return HttpResponse(message_on_error, content_type='application/json')
+                else:
+                    message_on_error = {
+                        "Error!": "We are sorry but the auction was updated while you tried to bid, please try again!"}  # dict
+                    message_on_error = str(message_on_error)
+                    message_on_error = message_on_error.replace("\'", "\"")
+                    return HttpResponse(message_on_error, content_type='application/json')
+            else:
+                return HttpResponseRedirect(reverse("home"))
+                message_on_error = {
+                    "Error!": "We are sorry but this is not an API-GET request but a POST one"}  # dict
+                message_on_error = str(message_on_error)
+                message_on_error = message_on_error.replace("\'", "\"")
+                return HttpResponse(message_on_error, content_type='application/json')
+        else:
+            raise NameError("We are sorry but we do not allow bids if you are not authenticated!")
+    except Exception as e:
+        message_on_error = {
+            "Error!": str(e)}  # dict
+        message_on_error = str(message_on_error)
+        message_on_error = message_on_error.replace("\'", "\"")
+        return HttpResponse(message_on_error, content_type='application/json')
+
+@method_decorator(login_required)
+def test_login(request):
+    return 1

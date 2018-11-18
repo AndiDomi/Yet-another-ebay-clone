@@ -34,4 +34,4 @@ class Bids(models.Model):
 
 class User_profile(models.Model):
     user = models.OneToOneField(User)
-    language= models.CharField(max_length=3,default="en")
+    language= models.CharField(max_length=3, default="en")

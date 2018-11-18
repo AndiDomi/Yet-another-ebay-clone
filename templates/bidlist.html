@@ -20,9 +20,6 @@
             <br>
 
         {% else %}
-            You are the authorised one
-            {{ auction.author }}
-            {{ authuser }}
             {% ifequal auction.author|slugify  authuser|slugify %}
 
                 <a href="/editbid/{{ auction.id }}/">{% trans "Edit Details" %}</a>
