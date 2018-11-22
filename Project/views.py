@@ -303,6 +303,9 @@ def bid(request):
                         auction.last_bider = request.user.username
                         auction.version = auction.version + auction.version
                         auction.save()
+                        # here we add 5 min to the bid if its close to the deadline
+                        if auction.bid_res < datetime.now()+timedelta(minutes=5):
+                            auction.bid_res += timedelta(minutes=5)
                         bids_save = Bids.objects.create(
                             bid=bidmade,
                             auction=auction,
