@@ -142,7 +142,7 @@ msgstr "Mireserdhe"
 
 #: templates/index.html:20
 msgid "Logout"
-msgstr "Logohu"
+msgstr "Logohu jasht"
 
 #: templates/logout.html:36
 msgid "Home"

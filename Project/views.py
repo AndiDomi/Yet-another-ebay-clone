@@ -615,7 +615,7 @@ def bid_api(request):
                 if request_version:
                     request_version=auction.version
                 if float(request_version) >= float(auction.version):
-                    if float(bidmade) > auction.last_bid + decimal.Decimal('0.01'):
+                    if float(bidmade) >= auction.last_bid + decimal.Decimal('0.01'):
                         auction.last_bid = bidmade
                         auction.last_bider = request.user.username
                         auction.version = auction.version + auction.version

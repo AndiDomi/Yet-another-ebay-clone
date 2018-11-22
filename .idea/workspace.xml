@@ -2,9 +2,34 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="e5cc492b-aa22-4116-a081-b4b813c45eb5" name="Default" comment="++Language changing without being logedin">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Project/test/tests.py" afterPath="$PROJECT_DIR$/Project/test/tests.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf/locale/al/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/conf/locale/al/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/db.sqlite3" afterPath="$PROJECT_DIR$/db.sqlite3" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/conf/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/conf/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admin/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admin/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admin/locale/en/LC_MESSAGES/djangojs.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admin/locale/en/LC_MESSAGES/djangojs.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admin/locale/fa/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admin/locale/fa/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admin/locale/fa/LC_MESSAGES/djangojs.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admin/locale/fa/LC_MESSAGES/djangojs.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admindocs/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admindocs/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admindocs/locale/fa/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/admindocs/locale/fa/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/auth/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/auth/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/auth/locale/fa/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/auth/locale/fa/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/contenttypes/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/contenttypes/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/flatpages/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/flatpages/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/flatpages/locale/fa/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/flatpages/locale/fa/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/flatpages/locale/th/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/flatpages/locale/th/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/gis/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/gis/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/gis/locale/fa/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/gis/locale/fa/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/humanize/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/humanize/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/postgres/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/postgres/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/postgres/locale/ko/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/postgres/locale/ko/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/redirects/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/redirects/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/sessions/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/sessions/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/sites/locale/en/LC_MESSAGES/django.mo" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/django/contrib/sites/locale/en/LC_MESSAGES/django.mo" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Project/views.py" afterPath="$PROJECT_DIR$/Project/views.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Projectweb/settings.py" afterPath="$PROJECT_DIR$/Projectweb/settings.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf/locale/al/LC_MESSAGES/django.po" afterPath="$PROJECT_DIR$/conf/locale/al/LC_MESSAGES/django.po" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/templates/base.html" afterPath="$PROJECT_DIR$/templates/base.html" />
     </list>
     <ignored path="$PROJECT_DIR$/.idea/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -15,7 +40,7 @@
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
   <component name="CoverageDataManager">
-    <SUITE FILE_PATH="coverage/Projectweb$Test__Project_test_tests.coverage" NAME="Test: Project.test.tests Coverage Results" MODIFIED="1542914439525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
+    <SUITE FILE_PATH="coverage/Projectweb$Test__Project_test_tests.coverage" NAME="Test: Project.test.tests Coverage Results" MODIFIED="1542914959164" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/Projectweb$Test__Project_Project_test.coverage" NAME="Test: Project Project/test Coverage Results" MODIFIED="1542643018465" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
     <SUITE FILE_PATH="coverage/Projectweb$test_uc3.coverage" NAME="test_uc3 Coverage Results" MODIFIED="1542547494628" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/Projectweb/test" />
     <SUITE FILE_PATH="coverage/Projectweb$Test.coverage" NAME="Test Coverage Results" MODIFIED="1542640127946" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="" />
@@ -76,11 +101,41 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="settings.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="settings.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Projectweb/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="132">
-              <caret line="129" column="0" lean-forward="true" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
+            <state relative-caret-position="372">
+              <caret line="145" column="0" lean-forward="false" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="tests.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Project/test/tests.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="615">
+              <caret line="56" column="49" lean-forward="false" selection-start-line="56" selection-start-column="49" selection-end-line="56" selection-end-column="49" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="base.html" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/templates/base.html">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="312">
+              <caret line="69" column="137" lean-forward="false" selection-start-line="69" selection-start-column="137" selection-end-line="69" selection-end-column="137" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="django.po" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/conf/locale/al/LC_MESSAGES/django.po">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="293">
+              <caret line="144" column="20" lean-forward="false" selection-start-line="144" selection-start-column="20" selection-end-line="144" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -89,21 +144,11 @@
       <file leaf-file-name="views.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Project/views.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="180">
-              <caret line="33" column="96" lean-forward="false" selection-start-line="33" selection-start-column="96" selection-end-line="33" selection-end-column="96" />
+            <state relative-caret-position="290">
+              <caret line="659" column="57" lean-forward="true" selection-start-line="659" selection-start-column="57" selection-end-line="659" selection-end-column="57" />
               <folding>
-                <marker date="1542914498824" expanded="true" signature="2342:2426" ph="SELECT Proje... Project_bids" />
+                <marker date="1542926453143" expanded="true" signature="2342:2426" ph="SELECT Proje... Project_bids" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="tests.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Project/test/tests.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="549">
-              <caret line="180" column="0" lean-forward="true" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -125,7 +170,6 @@
       <find>decimal</find>
       <find>wenzhin</find>
       <find>kendo</find>
-      <find>log</find>
       <find>auction</find>
       <find>last_bider</find>
       <find>decima</find>
@@ -151,6 +195,7 @@
       <find>/banbid/</find>
       <find>/add</find>
       <find>delta</find>
+      <find>log</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -191,16 +236,16 @@
         <option value="$PROJECT_DIR$/templates/login.html" />
         <option value="$PROJECT_DIR$/templates/wizardtest.html" />
         <option value="$PROJECT_DIR$/templates/editbid.html" />
-        <option value="$PROJECT_DIR$/conf/locale/al/LC_MESSAGES/django.po" />
         <option value="$PROJECT_DIR$/Projectweb/urls.py" />
-        <option value="$PROJECT_DIR$/templates/base.html" />
         <option value="$PROJECT_DIR$/templates/editprofile.html" />
         <option value="$PROJECT_DIR$/templates/createbid.html" />
         <option value="$PROJECT_DIR$/templates/bidlist.html" />
         <option value="$PROJECT_DIR$/requirements.txt" />
         <option value="$PROJECT_DIR$/Project/test/tests.py" />
-        <option value="$PROJECT_DIR$/Project/views.py" />
         <option value="$PROJECT_DIR$/Projectweb/settings.py" />
+        <option value="$PROJECT_DIR$/conf/locale/al/LC_MESSAGES/django.po" />
+        <option value="$PROJECT_DIR$/Project/views.py" />
+        <option value="$PROJECT_DIR$/templates/base.html" />
       </list>
     </option>
   </component>
@@ -241,6 +286,32 @@
             <path>
               <item name="Projectweb" type="b2602c69:ProjectViewProjectNode" />
               <item name="Projectweb" type="462c0819:PsiDirectoryNode" />
+              <item name="conf" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Projectweb" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Projectweb" type="462c0819:PsiDirectoryNode" />
+              <item name="conf" type="462c0819:PsiDirectoryNode" />
+              <item name="locale" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Projectweb" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Projectweb" type="462c0819:PsiDirectoryNode" />
+              <item name="conf" type="462c0819:PsiDirectoryNode" />
+              <item name="locale" type="462c0819:PsiDirectoryNode" />
+              <item name="al" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Projectweb" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Projectweb" type="462c0819:PsiDirectoryNode" />
+              <item name="conf" type="462c0819:PsiDirectoryNode" />
+              <item name="locale" type="462c0819:PsiDirectoryNode" />
+              <item name="al" type="462c0819:PsiDirectoryNode" />
+              <item name="LC_MESSAGES" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Projectweb" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Projectweb" type="462c0819:PsiDirectoryNode" />
               <item name="Project" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -253,6 +324,11 @@
               <item name="Projectweb" type="b2602c69:ProjectViewProjectNode" />
               <item name="Projectweb" type="462c0819:PsiDirectoryNode" />
               <item name="Projectweb" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Projectweb" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Projectweb" type="462c0819:PsiDirectoryNode" />
+              <item name="templates" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -294,7 +370,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Django tests.Test: Project.test.tests">
+  <component name="RunManager" selected="Django server.project">
     <configuration name="Django" type="Python.DjangoServer" factoryName="Django server">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -658,9 +734,6 @@
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Test__Project_test_tests - 2018.11.22 at 21h 07m 52s.xml">
-      <configuration name="Test: Project.test.tests" configurationId="DjangoTestsConfigurationType" />
-    </history-entry>
     <history-entry file="Test__Project_test_tests - 2018.11.22 at 21h 08m 40s.xml">
       <configuration name="Test: Project.test.tests" configurationId="DjangoTestsConfigurationType" />
     </history-entry>
@@ -688,6 +761,9 @@
     <history-entry file="Test__Project_test_tests - 2018.11.22 at 21h 20m 44s.xml">
       <configuration name="Test: Project.test.tests" configurationId="DjangoTestsConfigurationType" />
     </history-entry>
+    <history-entry file="Test__Project_test_tests - 2018.11.22 at 21h 29m 24s.xml">
+      <configuration name="Test: Project.test.tests" configurationId="DjangoTestsConfigurationType" />
+    </history-entry>
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -706,13 +782,13 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3252841" sideWeight="0.5218427" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32670453" sideWeight="0.49722" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32670453" sideWeight="0.49722" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3068182" sideWeight="0.49245432" order="15" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3252841" sideWeight="0.47815728" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18665607" sideWeight="0.48253274" order="2" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3068182" sideWeight="0.49245432" order="15" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3252841" sideWeight="0.47815728" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18665607" sideWeight="0.48253274" order="2" side_tool="false" content_ui="combo" />
       <window_info id="manage.py@Projectweb" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3252841" sideWeight="0.5830024" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35424942" sideWeight="0.48253274" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3252841" sideWeight="0.47815728" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.26926133" sideWeight="0.48253274" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26926133" sideWeight="0.48253274" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.35458168" sideWeight="0.51746726" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32803813" sideWeight="0.49126637" order="3" side_tool="false" content_ui="tabs" />
@@ -1027,14 +1103,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/conf/locale/al/LC_MESSAGES/django.po">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-965">
-          <caret line="83" column="37" lean-forward="false" selection-start-line="83" selection-start-column="37" selection-end-line="83" selection-end-column="37" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/templates/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="480">
@@ -1055,14 +1123,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="225">
           <caret line="15" column="107" lean-forward="false" selection-start-line="15" selection-start-column="107" selection-end-line="15" selection-end-column="107" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/templates/base.html">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="51" column="37" lean-forward="false" selection-start-line="51" selection-start-column="33" selection-end-line="51" selection-end-column="37" />
           <folding />
         </state>
       </provider>
@@ -1138,20 +1198,28 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Project/test/tests.py">
+    <entry file="file://$PROJECT_DIR$/Projectweb/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="549">
-          <caret line="180" column="0" lean-forward="true" selection-start-line="180" selection-start-column="0" selection-end-line="180" selection-end-column="0" />
+        <state relative-caret-position="372">
+          <caret line="145" column="0" lean-forward="false" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/conf/locale/al/LC_MESSAGES/django.po">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="293">
+          <caret line="144" column="20" lean-forward="false" selection-start-line="144" selection-start-column="20" selection-end-line="144" selection-end-column="20" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Project/views.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="33" column="96" lean-forward="false" selection-start-line="33" selection-start-column="96" selection-end-line="33" selection-end-column="96" />
+        <state relative-caret-position="290">
+          <caret line="659" column="57" lean-forward="true" selection-start-line="659" selection-start-column="57" selection-end-line="659" selection-end-column="57" />
           <folding>
-            <marker date="1542914498824" expanded="true" signature="2342:2426" ph="SELECT Proje... Project_bids" />
+            <marker date="1542926453143" expanded="true" signature="2342:2426" ph="SELECT Proje... Project_bids" />
           </folding>
         </state>
       </provider>
@@ -1164,10 +1232,18 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Projectweb/settings.py">
+    <entry file="file://$PROJECT_DIR$/Project/test/tests.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="132">
-          <caret line="129" column="0" lean-forward="true" selection-start-line="129" selection-start-column="0" selection-end-line="129" selection-end-column="0" />
+        <state relative-caret-position="615">
+          <caret line="56" column="49" lean-forward="false" selection-start-line="56" selection-start-column="49" selection-end-line="56" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/templates/base.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="312">
+          <caret line="69" column="137" lean-forward="false" selection-start-line="69" selection-start-column="137" selection-end-line="69" selection-end-column="137" />
           <folding />
         </state>
       </provider>

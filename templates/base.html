@@ -53,13 +53,22 @@
             {% endif %}
 
 
-            <li><a href="#api" data-toggle="collapse">API</a></li>
-                        <div id="api" class="collapse ">
-                <a href="http://127.0.0.1:8000/auctionapi/?option=Yes&b_title=andi&b_details&b_bid=1&b_res=2018-12-30T09:09" data-toggle="collapse">Create a AUCTION API example </a>
+            <li>
+                <a href="#api" data-toggle="collapse">API</a>
+            </li>
+                <div id="api" class="collapse ">
+                <a href="https://1988domi.pythonanywhere.com/auctionapi/?option=Yes&b_title=andi&b_details&b_bid=1&b_res=2018-12-30T09:09" data-toggle="collapse">Create a AUCTION API example </a>
                             <label></label>
-                <a href="http://127.0.0.1:8000/bidapi/?aid=1&bid=1000000" data-toggle="collapse">Create a BID API example</a>
+                <a href="https://1988domi.pythonanywhere.com/bidapi/?aid=1&bid=1000000" data-toggle="collapse">Create a BID API example</a>
                 </div>
-            <li><a href="#">{% trans "About / Documentation" %}</a></li>
+            <li>
+                <a href="#about" data-toggle="collapse">{% trans "About / Documentation" %}</a>
+            </li>
+                <div id="about" class="collapse ">
+                            <label>Made with love and coffee </label>
+                            <label>by Andi Domi!</label>
+                    <a href="https://1988domi.pythonanywhere.com/randomize/?id=50" data-toggle="collapse">Create 50 users and 50 auctions</a>
+                </div>
             </br>
             <div>
                 <div class="">
