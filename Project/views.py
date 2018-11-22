@@ -1,60 +1,95 @@
 import decimal
 import random
-
 import requests
-from django.core import serializers
-import math
-from django.shortcuts import render
-from django.utils.crypto import get_random_string
-from django.views import View
-# Create your views here.
-from django.contrib.auth import login, authenticate
-from django.shortcuts import render, redirect
-from Project.forms import *
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import UserCreationForm
-from django.contrib import auth
-from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
+from django.core import serializers
+from django.views import View
+from django.contrib.auth import login, authenticate
+from django.shortcuts import redirect
+from Project.forms import *
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404
+from django.http import HttpResponseRedirect, HttpResponse
 from django.utils.decorators import method_decorator
 from django.core.urlresolvers import reverse
 from django.contrib import messages
 from Project.models import Auction
 from Project.models import Bids
 from Project.models import User_profile
-from datetime import datetime, timedelta, date, time
-from django.conf import settings
-from django.core.paginator import Paginator
+from datetime import datetime, timedelta
 from django.utils import translation
 from django.core.mail import send_mail
 import json
 
 
-from django.contrib.auth.signals import user_logged_in
-
-
-# function that runs when we log in
-# in this case it just changes the language to the user prefered one
-def on_login_do(sender, user, request, **kwargs):
-    print('user'+ str(user))
-    print(request)
+# done
+def is_auction_active():
+    time_now=datetime.now() + timedelta(hours=72)
     try:
-        language = user.user_profile.language
+        auctions = Auction.objects.filter(active=1)
+        for item in auctions:
+            if item.bid_res < datetime.now():
+                item.active=0
+                item.save()
+                sendMailAll('Auction is resloved! The winner is '+str(item.last_bider), item.id)
+            else:
+                sendMailAll('Auction is resloved! The winner is ' + str(item.last_bider), item.id)
     except:
-        language = 'en'
-    translation.activate(language)
-    request.session[translation.LANGUAGE_SESSION_KEY] = language
+        print(' we have no actions to make')
+
+# done
+def login_user(request):
+    is_auction_active()
+    if request.method == 'GET':
+        print('we are in login get')
+        return render(request, "login.html")
+    else:
+        print(request.POST)
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request, user)
+            if request.user.is_superuser:
+                language = 'en'
+            else:
+                language = user.user_profile.language
+            messages.add_message(request, messages.INFO, "Login Successful")
+            translation.activate(language)
+            request.session[translation.LANGUAGE_SESSION_KEY] = language
+            return HttpResponseRedirect(reverse("home"))
+        else:
+            messages.add_message(request, messages.INFO, "Couldn't log in, please try again")
+            return HttpResponseRedirect(reverse("home"))
 
 
 # when user logs in funciton
-user_logged_in.connect(on_login_do)
 
 
-# TODO: check if the bid is active in all the views that are called
+def sendMailAll(what_happened, auction_id):
+    send_spam_to = []
+    for p in User.objects.raw(
+                    'SELECT Project_bids.bid_by_id as id from Project_bids WHERE Project_bids.auction_id=' + str(
+                    auction_id)):
+        print(User.objects.get(username=p).email)
+        send_spam_to.append(User.objects.get(username=p).email)
+    send_mail('subject', what_happened, 'noreply@parsifal.co', send_spam_to)
 
-def register(request):
+
+def sendMailAuthor(user, auction):
+    user2 = User.objects.get(username=user)
+    sent_TO = str(user2.email)
+    email_message = " Hello " + str(user2) + '! You just created an auction with Title : "' + str(auction.title) + \
+                    '" with Detail: "' + str(auction.details) + '" bid resoultion time: ' + str(
+        auction.bid_res) + " and minimum bid of " + str(auction.last_bid + ""
+                                                                           ' please, go here http://127.0.0.1:8000/showDetails/' + str(
+        auction.id) + '  to have a look at your auction!')
+    send_mail('subject', email_message, 'isAwesome@andi.domi', [user2.email])
+
+
+# done
+def register_user(request):
+    is_auction_active()
     print('we are in register')
     if request.method == 'POST':
         form = SignUpForm(request.POST)
@@ -76,8 +111,9 @@ def register(request):
 
 @method_decorator(login_required, name="dispatch")
 class add_auction(View):
+    is_auction_active()
     def get(self, request):
-        print('we are in create bid get')
+        print('get add auction'+str(request))
         global time_min
         time_min = datetime.now() + timedelta(hours=72)
 
@@ -86,6 +122,7 @@ class add_auction(View):
         return render(request, 'createbid.html', {'time': time_min})
 
     def post(self, request):
+        print('we are in post')
         form = CreateBid(request.POST)
         try:
             if form.is_valid():
@@ -117,7 +154,8 @@ class add_auction(View):
             return render(request, 'createbid.html', {'form': form})
 
 
-def save_acution(request):
+def save_auction(request):
+    is_auction_active()
     option = request.POST.get('option')
     if option == 'Yes':
         try:
@@ -128,7 +166,7 @@ def save_acution(request):
             b_bid = request.POST.get('b_bid')
             if b_bid=="":
                 raise NameError('You didnt put a starting bid!')
-            if float(b_bid) < 0.01:
+            if float(b_bid) < 0.01 and float(b_bid)==0:
                 b_bid = str(float(b_bid) + 0.01)
             b_res = request.POST.get('b_res')
             if b_res==""  :
@@ -137,6 +175,8 @@ def save_acution(request):
                 datetime.strptime(b_res, '%Y-%m-%dT%H:%M')
             except ValueError:
                 raise ValueError("Incorrect data format, should be Y-m-dT%H:M")
+            if b_res < str(datetime.now()+ timedelta(hours=72)):
+                raise NameError('Resolution time is in less then 72 hours, please try again!')
             bid_user = User.objects.get(username=request.user.username)
             bid_user = str(bid_user)
             auction_save = Auction.objects.create(title=b_title, details=b_details, bid_res=b_res, timestamp=datetime.now(),
@@ -155,13 +195,15 @@ def save_acution(request):
             return HttpResponseRedirect(reverse("home"))
         except Exception as e:
             messages.add_message(request, messages.INFO, e)
-            return HttpResponseRedirect(reverse("home"))
+            return HttpResponseRedirect(reverse("add_bid"))
     else:
-        return HttpResponseRedirect(reverse("home"))
+        messages.add_message(request, messages.INFO, "You should agree our terms and conditions")
+        return HttpResponseRedirect(reverse("add_bid"))
 
 
-## todo: add api
-def archive(request):
+
+def list_auctions(request):
+    is_auction_active()
     print('we are in achieve')
     dollar = exhange_rate()
     # if superuser
@@ -182,7 +224,6 @@ def archive(request):
     # if guest
     else:
         auction = Auction.objects.filter(banned=False).order_by('-timestamp')
-
         print('guest' + str(request.user))
         return render(request, "bidlist.html", {'auction': auction, 'dollar': dollar,
                                                 'guest': 'Your are not loged in, please log in to bid!'})
@@ -196,9 +237,9 @@ def exhange_rate():
     return dollar
 
 
-## TODO: add concurrency
-def editbid(request, offset):
-    print('we are in edit bid')
+
+def edit_auction(request, offset):
+    is_auction_active()
     if not request.user.is_authenticated():
         return HttpResponseRedirect('/login/')
     else:
@@ -215,34 +256,42 @@ def editbid(request, offset):
                        "version": auction.version
                        })
 
-
-## todo: add concurrncy
-def updatebid(request, offset):
-    print('we are in update')
-    print(offset)
+def edit_auction_details(request, offset):
+    is_auction_active()
     auction = Auction.objects.get(id=offset)
     print(auction.id)
     if request.method == "POST":
-        details = request.POST["details"]
-        print(details)
-        auction.details = details
-        print(auction.version)
-        auction.version += auction.version
-        auction.save()
-        messages.add_message(request, messages.INFO, "Bid updated")
+        if auction.active==1:
+            details = request.POST["details"]
+            print(details)
+            auction.details = details
+            print(auction.version)
+            auction.version += auction.version
+            auction.save()
+            messages.add_message(request, messages.INFO, "Auction details updated!")
+            sendMailAll('Auction details updated by the OP!',offset)
+        else:
+            messages.add_message(request, messages.INFO, "You cannot bid in a resolver auction!")
+    else:
+        messages.add_message(request, messages.INFO, "The request you made was not a get one!")
     return HttpResponseRedirect(reverse("home"))
 
 
-def bid(request, offset):
+def bid(request):
+    is_auction_active()
+    print(request)
     try:
         if request.user.is_authenticated():
             if request.method == "POST":
-                auctionID = offset
-                if auctionID == "":
+                print('post')
+                auctionID = request.POST["auction_ID"]
+                if auctionID == "" or not auctionID:
                     raise NameError('Auction ID is empty, please try again!')
                 auction = Auction.objects.get(id=auctionID)
                 if not auction:
                     raise NameError('Auction ID doesnt exist!')
+                if auction.active==0:
+                    raise NameError('You cannot bid in a resolved auction!')
                 bidmade = request.POST["bid"].strip()
                 if bidmade == "":
                     raise NameError('You didnt put a bid number, please try again!')
@@ -290,8 +339,7 @@ def bid(request, offset):
 # in here we search for different auctions
 # search is done only by title to keep things a bit simplier
 def search(request):
-    print('we are in search')
-    print(request.GET)
+    is_auction_active()
     dollar = exhange_rate()
     if request.method == "GET":
         searchText = request.GET["id"]
@@ -328,20 +376,21 @@ def search(request):
             return return_api_search(api_or_not,request, "bidlist.html", data)
 
 
-## todo: Concurrency?
+
 def bann_auction(request, id):
-    print('we are in ban')
+    is_auction_active()
     if request.method == "GET":
         auction_to_bann = Auction.objects.get(pk=id)
         auction_to_bann.banned = True
         auction_to_bann.save()
         messages.add_message(request, messages.INFO, "Auction banned!")
+        sendMailAll('Auction banned by admin!',id)
     return HttpResponseRedirect(reverse("home"))
 
 
-## done
+
 def changelanguage(request, iduser):
-    print('we are in change language')
+    is_auction_active()
     try:
         user = User.objects.get(id=iduser)
         if request.GET['password']:
@@ -360,11 +409,13 @@ def changelanguage(request, iduser):
 
 
 def editP(request):
+    is_auction_active()
     return render(request, "editprofile.html")
 
 
 # function to select langauge and save it
 def editL(request):
+    is_auction_active()
     print('we are in edit language')
     if request.POST['dropdown']:
         # get the language from the request
@@ -397,41 +448,14 @@ def editL(request):
 
 
 # to check if the bids are active
-def isBidActive(bid2):
-    print('we are in is bid active')
-    for a in bid2:
-        a2 = datetime.now()
-        b2 = a.bid_res
-        if str(b2) < str(a2):
-            a.active = 0
-            a.save()
+
 
 
 # send emails to the one who are partecipating in this auction
-def sendMailAll(what_happened, auction):
-    send_spam_to = []
-    for p in User.objects.raw(
-                    'SELECT Project_bids.bid_by_id as id from Project_bids WHERE Project_bids.auction_id=' + str(
-                    auction)):
-        print(User.objects.get(username=p).email)
-        send_spam_to.append(User.objects.get(username=p).email)
-    send_mail('subject', what_happened, 'noreply@parsifal.co', send_spam_to)
 
 
-def sendMailAuthor(user, auction):
-    user2 = User.objects.get(username=user)
-    print(user2)
-    sent_TO = str(user2.email)
-    print(sent_TO)
-    email_message = " Hello " + str(user2) + '! You just created an auction with Title : "' + str(auction.title) + \
-                    '" with Detail: "' + str(auction.details) + '" bid resoultion time: ' + str(
-        auction.bid_res) + " and minimum bid of " + str(auction.last_bid + ""
-                                                                           ' please, go here http://127.0.0.1:8000/showDetails/' + str(
-        auction.id) + '  to have a look at your auction!')
-    send_mail('subject', email_message, 'isAwesome@andi.domi', [user2.email])
-
-
-def showBidDetails(request, offset):
+def show_auction_details(request, offset):
+    is_auction_active()
     dollar = exhange_rate()
     if request.user.is_authenticated:
         auction = Auction.objects.filter(id=offset)
@@ -440,41 +464,14 @@ def showBidDetails(request, offset):
         messages.add_message(request, messages.INFO, "You are not logged in, please login to see the auction details")
         return HttpResponseRedirect(reverse("/login/"))
 
-# in here we search for an auction through api
-# because i dont really have time i copied the entire
-# def api_search(request):
-#     print('we are in search')
-#     if request.method == "GET":
-#         searchText = request.GET["id"]
-#         if request.user.is_superuser:
-#             auction = Auction.objects.filter(title__contains=searchText)
-#             auctions_ser = serializers.serialize('json', auction)
-#             struct = json.loads(auctions_ser)
-#             auctions_ser = json.dumps(struct)
-#             return HttpResponse(auctions_ser, content_type='application/json')
-#
-#         elif request.user.is_authenticated():
-#             auction = Auction.objects.filter(title__contains=searchText, banned=False)
-#             auctions_ser = serializers.serialize('json', auction)
-#             struct = json.loads(auctions_ser)
-#             auctions_ser = json.dumps(struct)
-#             return HttpResponse(auctions_ser, content_type='application/json')
-#
-#         else:
-#             auction = Auction.objects.filter(title__contains=searchText, banned=False)
-#             auctions_ser = serializers.serialize('json', auction)
-#             struct = json.loads(auctions_ser)
-#             auctions_ser = json.dumps(struct)
-#             return HttpResponse(auctions_ser, content_type='application/json')
-
-
 
 # in this function we create random users and emials
 # all the password are = "passpass"
 # ¨¨¨¨¨¨¨¨¨¨¨¨¨¨¨
 # normaly you have once 1/10000000000000000 to generate an exception
 # by generatin the same username
-def createRandomStuff(request):
+def create_n_users(request):
+    is_auction_active()
     if request.method == "GET":
         numbers_of_random = request.GET["id"]
         print(numbers_of_random)
@@ -597,9 +594,9 @@ def create_auction_api(request):
         return HttpResponse(message_on_error, content_type='application/json')
 
 
-# todo: if user is authenticated or not
-# todo: send mails to all the people who bided in here
+
 def bid_api(request):
+    is_auction_active()
     try:
         if request.user.is_authenticated():
             if request.method == "GET":
@@ -613,7 +610,6 @@ def bid_api(request):
                 if bidmade=="":
                     raise NameError('You didnt put a bid number, please try again!')
 
-                # todo: fix request version in here
                 request_version = request.GET["version"]
                 if request_version:
                     request_version=auction.version
@@ -663,6 +659,3 @@ def bid_api(request):
         message_on_error = message_on_error.replace("\'", "\"")
         return HttpResponse(message_on_error, content_type='application/json')
 
-@method_decorator(login_required)
-def test_login(request):
-    return 1

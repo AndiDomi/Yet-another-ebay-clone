@@ -6,27 +6,27 @@
 
         <h4> {{ auction.title }} </h4>
         {% ifequal auction.active 0 %}
-            <p>{% trans "Auction is not active! No bid and modification can be done on this Auction!" %}</p>
             {% if request.user.is_superuser %}
-                <a href="/banbid/{{ auction.id }}/">{% trans "Click here to Ban Auction!" %}</a>
+                <a href="/ban_auction/{{ auction.id }}/">{% trans "Click here to Ban Auction!" %}</a>
             {% endif %}
             <p>{% trans "Auction created by" %}: <b> {{ auction.author }} </b></p>
             <p>{% trans "Auction created on" %}: <b> {{ auction.timestamp }}</b></p>
             <p>{% trans "Auction ended at" %}: <b>{{ auction.bid_res }}</b></p>
             <p>{% trans "Details" %}: <b>{{ auction.details }}</b></p>
-            {% trans "The winner of this auction is" %}: {{ auction.last_bider }}: <b>{{ bids.last_bid }}</b>
+            {% trans "Auction resolved! The winner is" %}: {{ auction.last_bider }}: <b>{{ auction.last_bid }}</b>
             <br>
             <br>
             <br>
 
         {% else %}
             {% ifequal auction.author|slugify  authuser|slugify %}
-
-                <a href="/editbid/{{ auction.id }}/">{% trans "Edit Details" %}</a>
+                {% ifequal auction.active 1 %}
+                <a href="/edit_auction/{{ auction.id }}/">{% trans "Edit Details" %}</a>
+                {% endifequal%}
             {% endifequal %}
 
             {% if request.user.is_superuser and auction.banned == 0  %}
-                <a href="/banbid/{{ auction.id }}/">{% trans "Click here to Ban Auction!" %}</a>
+                <a href="/ban_auction/{{ auction.id }}/">{% trans "Click here to Ban Auction!" %}</a>
             {% endif %}
             {%  if auction.banned == 1 %}
                 <label> Auction Banned! No modification can be done to this auction!</label>
@@ -52,12 +52,13 @@
                         <label>The logged in user is the one who did the last bid</label>
                     {% endif %}
 
-                    <form action="/makebid/{{ auction.id }}/" method="post">
+                    <form action="/makebid/" method="post">
                         {% csrf_token %}
                         <input type="number" step="0.01" name="bid" min="{{ auction.last_bid }}" required="" id="bid"
                                placeholder={{ auction.last_bid }}>
                         <input type="hidden" name="version" value="{{ auction.version }}">
                         <input type="submit" value="Bid">
+                        <input type="hidden" name="auction_ID" value="{{auction.id}}">
                     </form>
                 {% else %}
                     {% if auction.author|slugify == authuser|slugify and auction.last_bider|slugify == authuser|slugify %}

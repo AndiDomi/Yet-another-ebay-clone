@@ -11,20 +11,20 @@
                         <div id="home" class="tab-pane fade in active col-lg-12 ">
                             <div class="wrapper ">
 
-                                <form class="form-signin " method="post">
+                                <form class="form-signin" method="post" >
                                     <!--<h2 class="form-signin-heading">Login</h2>-->
                                     {% csrf_token %}
+                                    <!--<h2 class="form-signin-heading">Login</h2>-->
                                     <div class="loginclass">
-                                    {% for field in form %}
-
                                     <div class="fieldWrapper">
-                                        {{ field.errors }}
-                                        {{ field.label_tag }}: {{ field }}
+                                        <label for="id_username">Username:</label>: <input type="text" name="username" autofocus="" maxlength="254" required="" id="username">
                                     </div>
                                         </div>
-                                    {% endfor %}
 
-                                    <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Login" %}</button>
+                                    <div class="fieldWrapper">
+                                        <label for="id_password">Password:</label>: <input type="password" name="password" required="" id="password">
+                                    </div>
+                                        <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Login" %}</button>
                                 </form>
                             </div>
                         </div>

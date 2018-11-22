@@ -6,7 +6,7 @@
   {% if error%}
   <p> <b>{{ error }}</b> </p>
     {% endif %}
-<form action="/add/" method="post">
+<form action="/add_auction/" method="post">
     {% csrf_token %}
     <p><label for="id_title">Title of the auction :</label> <input type="text" name="title" maxlength="200" required="" id="id_title"></p>
 <p><label for="id_details">The description of the auction :</label> <textarea name="details" cols="40" rows="10" id="id_details"></textarea></p>

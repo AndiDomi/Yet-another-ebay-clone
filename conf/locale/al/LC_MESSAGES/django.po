@@ -80,8 +80,8 @@ msgid "Details"
 msgstr "Detaje"
 
 #: templates/bidlist.html:18
-msgid "The winner of this auction is"
-msgstr "Fituesi i ketij Ankandi eshte"
+msgid "Auction resolved! The winner is"
+msgstr "Ankandi mbaroi! Fituesi eshte"
 
 #: templates/bidlist.html:25
 msgid "Edit Auction"

@@ -5,8 +5,7 @@
 {% block content %}
 
 <p><b>{% trans "Edit Bid:" %}. {{ title }}</b></p>
-    <form action="/updatebid/{{ id }}/" method="post">
-    {{ id }}
+    <form action="/edit_auction_details/{{ id }}/" method="post">
         {%  csrf_token %}
        <p>{% trans " Details:"%}  <textarea name="details" cols="50" rows="20">{{ bid_details }}</textarea></p>
         <input type="number" name="version" hidden value="{{ version }}">

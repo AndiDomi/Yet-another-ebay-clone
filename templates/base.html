@@ -14,12 +14,6 @@
     <link href={% static "css/bootstrap.min.css" %} rel="stylesheet">
     <!-- Custom CSS -->
     <link href={% static "css/simple-sidebar.css" %} rel="stylesheet">
-{#       <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" type="text/css" />#}
- {#    <link href="http://wenzhixin.net.cn/p/bootstrap-table/src/bootstrap-table.css" rel="stylesheet" type="text/css" /> #}
-
-{#    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.common.min.css" rel="stylesheet" /> #}
-{#    <link href="http://cdn.kendostatic.com/2014.1.318/styles/kendo.bootstrap.min.css" rel="stylesheet" />#}
-{#    <link href="http://protostrap.com/Assets/gv/css/gv.bootstrap-form.css" rel="stylesheet" type="text/css" />#}
     <style>
         .bar1,
         .bar2,
@@ -55,11 +49,16 @@
                 </div>
             </li>
             {% if user.is_authenticated %}
-                    <li><a href="/add/">{% trans "Create Auction" %}</a></li>
+                    <li><a href="/add_auction/">{% trans "Create Auction" %}</a></li>
             {% endif %}
 
 
-            <li><a href="#">API</a></li>
+            <li><a href="#api" data-toggle="collapse">API</a></li>
+                        <div id="api" class="collapse ">
+                <a href="http://127.0.0.1:8000/auctionapi/?option=Yes&b_title=andi&b_details&b_bid=1&b_res=2018-12-30T09:09" data-toggle="collapse">Create a AUCTION API example </a>
+                            <label></label>
+                <a href="http://127.0.0.1:8000/bidapi/?aid=1&bid=1000000" data-toggle="collapse">Create a BID API example</a>
+                </div>
             <li><a href="#">{% trans "About / Documentation" %}</a></li>
             </br>
             <div>
@@ -74,21 +73,7 @@
             {% endfor %}
         </ul>
     {% endif %}
-{% comment %}                    <form class="form-editPass" action="/editprofile/" method="get">
-                    {%  csrf_token %}
-                    <select name="dropdown">
-                    <option  disabled selected>Select language:</option>
-                    <option value='en'>English</option>
-                    <option value='al'>Albanian</option>
-
-                </select>
-                    <button class="btn btn-lg btn-primary btn-block" type="submit">Edit Language</button>
-                </form>{% endcomment %}
-
-
-
-
-                <form class="form-editPass" action="/editL/" method="POST">
+                <form class="form-editPass" action="/edit_language/" method="POST">
                     {%  csrf_token %}
                     <select name="dropdown">
                     <option value='en'>English</option>
@@ -97,10 +82,6 @@
                     </select><br>
                     <button class="btn btn-sm btn-primary "  type="submit">Select Language</button>
                 </form>
-
-
-
-
 
         </ul>
     </div>
@@ -137,7 +118,7 @@
 <script src={% static "js/jquery.js" %}></script>
 <script src={% static "js/bootstrap.min.js" %}></script>
 <script src={% static "js/tog_butt.js" %}></script>
-<script src= "http://openexchangerates.github.io/money.js/money.min.js" ></script>
+
 
 <script>
     $("#menu-toggle").click(function (e) {
