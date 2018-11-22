@@ -26,14 +26,14 @@ class UserHistoryTest(TestCase):
 
     # creates a bid without being authorised
     def test_create_bid_without_auth(self):
-        resp_get = self.client.get('/add/')
+        resp_get = self.client.get('/add_auction/')
         self.failUnlessEqual(resp_get.status_code,302)
 
     # creates a bid while being authorised
     def test_create_bid_with_auth(self):
         resp_login = self.client.login(username='andi2', password='passpass2')
         self.failUnlessEqual(resp_login,True)
-        resp_get = self.client.get('/add/',{
+        resp_get = self.client.get('/add_auction/',{
             'id_title':'title test',
             'id_details':'a',
             'id_bid':1,
@@ -66,7 +66,7 @@ class UserHistoryTest(TestCase):
             msg = matches[0]
             print(msg)
             self.assertEqual(str(msg), 'You should agree our terms and conditions')
-            self.assertRedirects(response, '/add/')
+            self.assertRedirects(response, '/add_auction/')
 
         # saying nothing in the agreement
         form_data = {'option': '', 'b_title': "Test Title", 'b_details': 'test details', 'b_bid': 1000,'b_res':"2019-11-30T00:00" }
@@ -76,7 +76,7 @@ class UserHistoryTest(TestCase):
             msg = matches[0]
             print(msg)
             self.assertEqual(str(msg), 'You should agree our terms and conditions')
-            self.assertRedirects(response, '/add/')
+            self.assertRedirects(response, '/add_auction/')
 
 
         # no title format input
@@ -87,7 +87,7 @@ class UserHistoryTest(TestCase):
             msg = matches[0]
             print(msg)
             self.assertEqual(str(msg), 'Title is empty!')
-            self.assertRedirects(response, '/add/')
+            self.assertRedirects(response, '/add_auction/')
 
 
         # no minimum bid specified (in case of 0 it becomes automatically 0.1) format input
@@ -98,7 +98,7 @@ class UserHistoryTest(TestCase):
             msg = matches[0]
             print(msg)
             self.assertEqual(str(msg), 'You didnt put a starting bid!')
-            self.assertRedirects(response, '/add/')
+            self.assertRedirects(response, '/add_auction/')
 
 
         # less then 72 resolution time format input
@@ -109,7 +109,7 @@ class UserHistoryTest(TestCase):
             msg = matches[0]
             print(msg)
             self.assertEqual(str(msg), 'Resolution time is in less then 72 hours, please try again!')
-            self.assertRedirects(response, '/add/')
+            self.assertRedirects(response, '/add_auction/')
 
 
     def test_bid_data(self):
@@ -117,7 +117,7 @@ class UserHistoryTest(TestCase):
         self.failUnlessEqual(resp_login, True)
 
         # we create an auction to take the id so we can add the bids to that auction
-        auction = Auction.objects.create(title='Test Title', details='test details', bid_res=(datetime.now()+datetime.timedelta('20s')), timestamp= datetime.now(),
+        auction = Auction.objects.create(title='Test Title', details='test details', bid_res=(datetime.now()+timedelta(seconds=20)), timestamp= datetime.now(),
                                                   author=self.user, active=1, last_bid=1000, last_bider='andi2')
 
         # data to be sent to the bid

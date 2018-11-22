@@ -32,8 +32,6 @@ def is_auction_active():
                 item.active=0
                 item.save()
                 sendMailAll('Auction is resloved! The winner is '+str(item.last_bider), item.id)
-            else:
-                sendMailAll('Auction is resloved! The winner is ' + str(item.last_bider), item.id)
     except:
         print(' we have no actions to make')
 
